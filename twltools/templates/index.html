@@ -3,7 +3,9 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
   <h1>TWL Tools</h1>
-  <a href="{{ url_for('periodicals') }}">Periodicals</a>
+  <div class="navbar">
+    <a href="{{ url_for('periodicals') }}">Periodicals</a>
+  </div>
   {#<div class=metanav>
   {% if not session.logged_in %}
     <a href="{{ url_for('login') }}">log in</a>
@@ -14,4 +16,10 @@
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}#}
+
+  <hr>
+  <p class="footer">
+    Maintained by <a href="https://en.wikipedia.org/wiki/User:Samwalton9">Sam Walton</a> - 
+    <a href="https://github.com/Samwalton9/TWL-tools">Github</a>
+  </p>
 </div>

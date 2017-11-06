@@ -17,3 +17,5 @@ h2              { font-size: 1.2em; }
                   border: 1px solid #aacbe2; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 .submission-button {margin-top: 1cm; margin-bottom: 1cm; text-align: center;}
+.footer 		{font-size: 0.8em; margin-top: 0.5cm;}
+.navbar 		{font-size: 1.5em; margin-top: 0.3cm; text-align: center}
