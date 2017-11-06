@@ -80,7 +80,7 @@ def periodicals():
 class ProxyNumbers():
 
 	scope = ['https://spreadsheets.google.com/feeds']
-	creds = ServiceAccountCredentials.from_json_keyfile_name('../client_secret.json', scope) # Login to Google
+	creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope) # Login to Google
 	g_client = gspread.authorize(creds)
 
 	def get_worksheet(self, key, sheet_num):
