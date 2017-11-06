@@ -1,9 +1,19 @@
 <!doctype html>
-<title>TWL Tools</title>
+<title>TWL Tools - Periodicals</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
-  <h1>TWL Tools</h1>
-  <a href="{{ url_for('periodicals') }}">Periodicals</a>
+  <h1>TWL Tools/Periodicals counter</h1>
+  <form action="/periodicals" method="post">
+  <p class="submission-button">
+  <input type="submit" name="submit_proxy" value="Recalculate">
+  </p>
+  </form>
+
+  {% for result in results %}
+    {{ result }}
+    <br>
+  {% endfor %}
+
   <div class=metanav>
   {% if not session.logged_in %}
     <a href="{{ url_for('login') }}">log in</a>

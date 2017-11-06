@@ -27,6 +27,7 @@ import flask
 import gspread
 import numpy as np
 from oauth2client.service_account import ServiceAccountCredentials
+import datetime
 
 app = flask.Flask(__name__)
 app.config.from_object(__name__)
@@ -41,19 +42,24 @@ app.config.from_envvar('TWLTOOLS_SETTINGS', silent=True)
 def index():
 	return flask.render_template('index.html')
 
-@app.route('/submit/', methods=['POST'])
+@app.route('/submit', methods=['POST'])
 def submit():
-	results = None
+
+	return flask.render_template('index.html')
+
+@app.route('/periodicals', methods=['GET', 'POST'])
+def periodicals():
+
 	if flask.request.method == 'POST':
 		if 'submit_proxy' in flask.request.form:
-			#TODO: Post a 'working...' message
-			#flask.render_template('index.html', results=results, status='Calculating proxy numbers...')
-			results = ProxyNumbers().collect_proxy_data()
-		if 'submit_metrics' in flask.request.form:
-			pass #TODO: Figure out how to run, print progress(?), and output
-		else:
-			pass #TODO: This should never happen, so not sure what goes here
-	return flask.render_template('index.html', results=results)
+			ProxyNumbers().collect_proxy_data()
+	try:
+		results = open('periodicals_data', 'r').readlines()
+	except FileNotFoundError:
+		results = None
+
+	return flask.render_template('periodicals.html', results=results)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -138,12 +144,13 @@ class ProxyNumbers():
 
 		num_bundle, num_proxy, num_periodicals = len(unique_bundle), len(unique_proxy), len(np.unique(current_periodicals))
 
-		proxy_results = {
-			'type': 'proxy',
-			'periodicals': len(current_periodicals),
-			'unique_periodicals': num_periodicals,
-			'proxy': num_proxy,
-			'bundle': num_bundle
-		}
+		data_output = ["Data generated: %s" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"),
+			"",
+			"Total periodicals: %s" % len(current_periodicals),
+			"Number of unique periodicals: %s" % num_periodicals,
+			"Number of periodicals accessible by proxy: %s" % num_proxy,
+			"Number of bundle periodicals: %s" % num_bundle]
 
-		return proxy_results
+		f = open('periodicals_data', 'w')
+		for line in data_output:
+			f.write(line + "\n")
