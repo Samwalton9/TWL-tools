@@ -76,7 +76,6 @@ def periodicals():
 # 	flask.flash('Logged out')
 # 	return flask.redirect(flask.url_for('index'))
 
-# This doesn't use numpy for any sensible reason.
 class ProxyNumbers():
 
 	scope = ['https://spreadsheets.google.com/feeds']
@@ -139,8 +138,8 @@ class ProxyNumbers():
 			"",
 			"Total periodicals: %s" % len(current_periodicals),
 			"Number of unique periodicals: %s" % num_periodicals,
-			"Number of periodicals accessible by proxy: %s" % num_proxy,
-			"Number of bundle periodicals: %s" % num_bundle]
+			"Number of periodicals accessible by proxy: %s (%.1f%%)" % (num_proxy, 100 * (num_proxy/num_periodicals)),
+			"Number of bundle periodicals: %s (%.1f%%)" % (num_bundle, 100 * (num_bundle/num_periodicals))]
 
 		f = open('periodicals_data', 'w')
 		for line in data_output:
