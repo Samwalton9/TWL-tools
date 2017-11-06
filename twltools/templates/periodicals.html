@@ -15,7 +15,7 @@
     <br>
   {% endfor %}
 
-  <div class=metanav>
+  {#<div class=metanav>
   {% if not session.logged_in %}
     <a href="{{ url_for('login') }}">log in</a>
   {% else %}
@@ -24,6 +24,6 @@
   </div>
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
-  {% endfor %}
+  {% endfor %}#}
   {% block body %}{% endblock %}
 </div>

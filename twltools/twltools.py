@@ -42,11 +42,6 @@ app.config.from_envvar('TWLTOOLS_SETTINGS', silent=True)
 def index():
 	return flask.render_template('index.html')
 
-@app.route('/submit', methods=['POST'])
-def submit():
-
-	return flask.render_template('index.html')
-
 @app.route('/periodicals', methods=['GET', 'POST'])
 def periodicals():
 
@@ -61,31 +56,27 @@ def periodicals():
 	return flask.render_template('periodicals.html', results=results)
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	error = None
-	if flask.request.method == 'POST':
-		if flask.request.form['username'] != app.config['USERNAME']:
-			error = 'Invalid username'
-		elif flask.request.form['password'] != app.config['PASSWORD']:
-			error = 'Invalid password'
-		else:
-			flask.session['logged in'] = True
-			flask.flash('Logged in successfully')
-			return flask.redirect(flask.url_for('index'))
-	return flask.render_template('login.html', error=error)
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+# 	error = None
+# 	if flask.request.method == 'POST':
+# 		if flask.request.form['username'] != app.config['USERNAME']:
+# 			error = 'Invalid username'
+# 		elif flask.request.form['password'] != app.config['PASSWORD']:
+# 			error = 'Invalid password'
+# 		else:
+# 			flask.session['logged in'] = True
+# 			flask.flash('Logged in successfully')
+# 			return flask.redirect(flask.url_for('index'))
+# 	return flask.render_template('login.html', error=error)
 
-@app.route('/logout')
-def logout():
-	flask.session.pop('logged_in', None)
-	flask.flash('Logged out')
-	return flask.redirect(flask.url_for('index'))
+# @app.route('/logout')
+# def logout():
+# 	flask.session.pop('logged_in', None)
+# 	flask.flash('Logged out')
+# 	return flask.redirect(flask.url_for('index'))
 
-#
-# proxy_numbers.py
 # This doesn't use numpy for any sensible reason.
-#
-
 class ProxyNumbers():
 
 	scope = ['https://spreadsheets.google.com/feeds']
