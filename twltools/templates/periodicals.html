@@ -3,11 +3,12 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
   <h1>TWL Tools/Periodicals counter</h1>
-  <form action="/periodicals" method="post">
-  <p class="submission-button">
-  <input type="submit" name="submit_proxy" value="Recalculate">
-  </p>
-  </form>
+  <a href="{{ url_for('index') }}">Back</a>
+  <div class="submission-button">
+    <form action="/periodicals" method="post">
+      <input type="submit" name="submit_proxy" value="Recalculate">
+    </form>
+  </div>
 
   {% for result in results %}
     {{ result }}
