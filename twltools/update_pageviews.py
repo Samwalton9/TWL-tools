@@ -149,21 +149,22 @@ for sheet_num in sheet_ids:
 #Keep last log, but rename
 #TODO: Allow for multiple logs in one month
 try:
-	os.rename('latest_pageviews_log.txt', '%s_%s_pageviews_log.txt' % (last_month,this_year))
+	os.rename('logs/latest_pageviews_log.txt', 'logs/%s_%s_pageviews_log.txt' % (last_month,this_year))
 except FileNotFoundError: #Don't worry if there's no file yet
 	pass
 
 #Log errors and notes
 #TODO: Display on TWL Tools
-#TODO: Add a sub-title with info on the section, if relevant
 
-def log_errors(file, error_array, title_text):
+def log_errors(file, error_array, title_text, subtext=''):
 	if len(error_array) > 0:
-		f.write('\n%s\n--------------\n' % title_text)
+		f.write('\n%s\n--------------\n%s\n' % (title_text,subtext))
 		for error_text in error_array:
 			f.write(error_text + "\n")
 
-f = open('latest_pageviews_log.txt', 'w')
+f = open('logs/latest_pageviews_log.txt', 'w')
+f.write("Pageviews data collection last ran: %s (UTC)\n" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"))
 log_errors(f, all_added_pages, 'New pages')
 log_errors(f, languages_skipped, 'Skipped languages')
-log_errors(f, api_errors, 'API errors')
+log_errors(f, api_errors, 'API errors',
+			 'Likely the result of a page being deleted or moved.\n')
