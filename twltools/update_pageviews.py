@@ -7,9 +7,9 @@ from mwviews.api import PageviewsClient
 from oauth2client.service_account import ServiceAccountCredentials
 from calendar import monthrange
 
-#TODO: Add capability to trigger the addition of a new language from TWL Tools
 #TODO: Update Global Sums when everything is collected. Maybe.
 #TODO: Output some stuff if the code runs successfully, reschedule if something went wrong
+#TODO: Consolidate some code e.g. logging in to a Google Sheet for use between here and metrics/periodicals
 
 ua = 'Page views collection for The Wikipedia Library. Run by User:Samwalton9'
 
@@ -35,6 +35,11 @@ def listpages(this_site, category_name):
 		if page.namespace in [0, 4, 102]: #Ignore unimportant namespaces
 			page_list.append(page.name)
 	return page_list
+
+
+#TODO: Add capability to trigger the addition of a new language from TWL Tools
+def add_new_language():
+	pass
 
 scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name('../../client_secret.json', scope)

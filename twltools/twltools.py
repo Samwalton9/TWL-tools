@@ -86,6 +86,7 @@ def pageviews():
 # 	flask.flash('Logged out')
 # 	return flask.redirect(flask.url_for('index'))
 
+#TODO: Move into a separate file, split out some code that's duplicated elsewhere
 class ProxyNumbers():
 
 	scope = ['https://spreadsheets.google.com/feeds']
