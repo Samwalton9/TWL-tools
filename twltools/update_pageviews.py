@@ -42,7 +42,7 @@ g_client = gspread.authorize(creds)
 g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik') #Test sheet
 
 num_languages = 20
-sheet_ids = range(2,2+num_languages) #Confusingly, gspread doesn't count graph-only sheets as real sheets.
+sheet_ids = range(1,1+num_languages) #Confusingly, gspread doesn't count graph-only sheets as real sheets.
 
 last_month = datetime.date.today().month - 1
 this_year = datetime.date.today().year
@@ -147,6 +147,7 @@ for sheet_num in sheet_ids:
 			last_value = worksheet.col_values(fill_column-1)[row+1]
 
 #Keep last log, but rename
+#TODO: Allow for multiple logs in one month
 try:
 	os.rename('latest_pageviews_log.txt', '%s_%s_pageviews_log.txt' % (last_month,this_year))
 except FileNotFoundError: #Don't worry if there's no file yet

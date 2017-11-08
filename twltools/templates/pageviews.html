@@ -1,15 +1,10 @@
 <!doctype html>
-<title>TWL Tools - Periodicals</title>
+<title>TWL Tools - Pageviews</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
-  <h1>TWL Tools/Periodicals counter</h1>
+  <h1>TWL Tools/Pageviews log</h1>
   <div class="back-button">
   <a href="{{ url_for('index') }}">Back</a>
-  </div>
-  <div class="submission-button">
-    <form action="/periodicals" method="post">
-      <input type="submit" name="submit_proxy" value="Calculate">
-    </form>
   </div>
 
   {% if results %}
@@ -18,7 +13,7 @@
       <br>
     {% endfor %}
   {% else %}
-    Periodical count has either not yet been calculated, or the file was deleted.
+    Pageviews have either not yet been calculated, or the latest log file was deleted.
   {% endif %}
 
   {#<div class=metanav>

@@ -49,12 +49,22 @@ def periodicals():
 		if 'submit_proxy' in flask.request.form:
 			ProxyNumbers().collect_proxy_data()
 	try:
-		results = open('periodicals_data', 'r').readlines()
+		results = open('twltools/periodicals_data', 'r').readlines()
 	except FileNotFoundError:
 		results = None
 
 	return flask.render_template('periodicals.html', results=results)
 
+@app.route('/pageviews')
+def pageviews():
+	#TODO: Allow user to open a previous log
+
+	try:
+		results = open('twltools/latest_pageviews_log.txt', 'r').readlines()
+	except FileNotFoundError:
+		results = None
+
+	return flask.render_template('pageviews.html', results=results)
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
@@ -79,7 +89,7 @@ def periodicals():
 class ProxyNumbers():
 
 	scope = ['https://spreadsheets.google.com/feeds']
-	creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope) # Login to Google
+	creds = ServiceAccountCredentials.from_json_keyfile_name('../client_secret.json', scope) # Login to Google
 	g_client = gspread.authorize(creds)
 
 	def get_worksheet(self, key, sheet_num):
@@ -134,7 +144,7 @@ class ProxyNumbers():
 
 		num_bundle, num_proxy, num_periodicals = len(unique_bundle), len(unique_proxy), len(np.unique(current_periodicals))
 
-		data_output = ["Data generated: %s" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"),
+		data_output = ["Data generated: %s (UTC)" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"),
 			"",
 			"Total periodicals: %s" % len(current_periodicals),
 			"Number of unique periodicals: %s" % num_periodicals,
