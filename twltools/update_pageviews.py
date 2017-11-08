@@ -23,15 +23,15 @@ def mwclient_login(language, m_or_p):
 
 	return site
 
-#Recursively check categories.
-#Pray that we don't have any loops.
-#TODO: Deal with loops.
+#Recursively check categories, avoid looping indefinitely.
 def listpages(this_site, category_name):
-	page_list = []
+	page_list, category_tracker = [], []
 	for page in this_site.Categories[category_name]:
 		if page.namespace == 14:
-			#print("I think %s is a category" %':'.join(page.name.split(":")[1:]))
-			page_list.extend(listpages(this_site,':'.join(page.name.split(":")[1:])))
+			if page.name not in category_tracker:
+				page_list.extend(listpages(this_site,':'.join(page.name.split(":")[1:])))
+			else:
+				category_tracker.append(page.name)
 		if page.namespace in [0, 4, 102]: #Ignore unimportant namespaces
 			page_list.append(page.name)
 	return page_list
@@ -156,8 +156,6 @@ except FileNotFoundError: #Don't worry if there's no file yet
 	pass
 
 #Log errors and notes
-#TODO: Display on TWL Tools
-
 def log_errors(file, error_array, title_text, subtext=''):
 	if len(error_array) > 0:
 		f.write('\n%s\n--------------\n%s\n' % (title_text,subtext))
