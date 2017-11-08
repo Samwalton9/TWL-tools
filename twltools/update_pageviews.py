@@ -2,6 +2,7 @@ import gspread
 import datetime
 import mwclient
 import os
+import glob
 from mwviews.api import PageviewsClient
 from oauth2client.service_account import ServiceAccountCredentials
 from calendar import monthrange
@@ -147,9 +148,10 @@ for sheet_num in sheet_ids:
 			last_value = worksheet.col_values(fill_column-1)[row+1]
 
 #Keep last log, but rename
-#TODO: Allow for multiple logs in one month
+log_count = len(glob.glob('logs/%s_%s_*pageviews_log.txt' % (last_month, this_year)))
+
 try:
-	os.rename('logs/latest_pageviews_log.txt', 'logs/%s_%s_pageviews_log.txt' % (last_month,this_year))
+	os.rename('logs/latest_pageviews_log.txt', 'logs/%s_%s_%s_pageviews_log.txt' % (last_month, this_year, log_count+1))
 except FileNotFoundError: #Don't worry if there's no file yet
 	pass
 
