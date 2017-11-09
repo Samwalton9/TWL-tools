@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
 import gspread
 import datetime
 import mwclient
@@ -172,7 +171,7 @@ def log_errors(file, error_array, title_text, subtext=''):
 	if len(error_array) > 0:
 		f.write('\n%s\n--------------\n%s\n' % (title_text,subtext))
 		for error_text in error_array:
-			f.write(error_text.encode('utf-8') + "\n")
+			f.write(error_text + "\n")
 
 f = open(logs_folder + 'latest_pageviews_log.txt', 'w')
 f.write("Pageviews data collection last ran: %s (UTC)\n" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"))
