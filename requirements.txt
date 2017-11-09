@@ -1,0 +1,6 @@
+flask
+gspread
+numpy
+oauth2client
+mwclient
+mwviews
