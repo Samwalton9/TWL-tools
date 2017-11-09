@@ -173,7 +173,7 @@ def log_errors(file, error_array, title_text, subtext=''):
 		for error_text in error_array:
 			f.write(error_text + "\n")
 
-f = open('logs/latest_pageviews_log.txt', 'w')
+f = open(logs_folder + 'latest_pageviews_log.txt', 'w')
 f.write("Pageviews data collection last ran: %s (UTC)\n" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"))
 log_errors(f, all_added_pages, 'New pages')
 log_errors(f, languages_skipped, 'Skipped languages')
