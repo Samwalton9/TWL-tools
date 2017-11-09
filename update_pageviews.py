@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import gspread
 import datetime
 import mwclient
@@ -11,13 +12,15 @@ from calendar import monthrange
 #TODO: Output some stuff if the code runs successfully, reschedule if something went wrong
 #TODO: Consolidate some code e.g. logging in to a Google Sheet for use between here and metrics/periodicals
 
+__dir__ = os.path.dirname(__file__)
+
 ua = 'Page views collection for The Wikipedia Library. Run by User:Samwalton9'
 
 p = PageviewsClient()
 
 def mwclient_login(language, m_or_p):
 	site = mwclient.Site(('https', '%s.wiki%sedia.org' % (current_language, m_or_p)), clients_useragent=ua)
-	f = open('../../api_login.txt', 'r')
+	f = open(os.path.join(__dir__,'api_login.txt'), 'r')
 	password = f.readline()[:-1]
 	site.login('Samwalton9API', password)
 
@@ -42,7 +45,8 @@ def add_new_language():
 	pass
 
 scope = ['https://spreadsheets.google.com/feeds']
-creds = ServiceAccountCredentials.from_json_keyfile_name('../../client_secret.json', scope)
+print(os.path.join(__dir__,'client_secret.json')
+creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(__dir__, 'client_secret.json'), scope)
 g_client = gspread.authorize(creds)
 
 g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik') #Test sheet
