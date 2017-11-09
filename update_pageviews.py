@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import gspread
 import datetime
 import mwclient
@@ -11,13 +12,15 @@ from calendar import monthrange
 #TODO: Output some stuff if the code runs successfully, reschedule if something went wrong
 #TODO: Consolidate some code e.g. logging in to a Google Sheet for use between here and metrics/periodicals
 
+__dir__ = os.path.dirname(__file__)
+
 ua = 'Page views collection for The Wikipedia Library. Run by User:Samwalton9'
 
 p = PageviewsClient()
 
 def mwclient_login(language, m_or_p):
 	site = mwclient.Site(('https', '%s.wiki%sedia.org' % (current_language, m_or_p)), clients_useragent=ua)
-	f = open('../../api_login.txt', 'r')
+	f = open(os.path.join(__dir__,'api_login.txt'), 'r')
 	password = f.readline()[:-1]
 	site.login('Samwalton9API', password)
 
@@ -42,7 +45,7 @@ def add_new_language():
 	pass
 
 scope = ['https://spreadsheets.google.com/feeds']
-creds = ServiceAccountCredentials.from_json_keyfile_name('../../client_secret.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(__dir__, 'client_secret.json'), scope)
 g_client = gspread.authorize(creds)
 
 g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik') #Test sheet
@@ -153,10 +156,13 @@ for sheet_num in sheet_ids:
 			last_value = worksheet.col_values(fill_column-1)[row+1]
 
 #Keep last log, but rename
-log_count = len(glob.glob('logs/%s_%s_*pageviews_log.txt' % (last_month, this_year)))
+#TODO: Check if there even is a logs folder, make one if not
+logs_folder = os.path.join(__dir__,'logs/')
+
+log_count = len(glob.glob(logs_folder + '%s_%s_*pageviews_log.txt' % (last_month, this_year)))
 
 try:
-	os.rename('logs/latest_pageviews_log.txt', 'logs/%s_%s_%s_pageviews_log.txt' % (last_month, this_year, log_count+1))
+	os.rename(logs_folder + 'latest_pageviews_log.txt', logs_folder + '%s_%s_%s_pageviews_log.txt' % (last_month, this_year, log_count+1))
 except FileNotFoundError: #Don't worry if there's no file yet
 	pass
 
@@ -167,7 +173,7 @@ def log_errors(file, error_array, title_text, subtext=''):
 		for error_text in error_array:
 			f.write(error_text + "\n")
 
-f = open('logs/latest_pageviews_log.txt', 'w')
+f = open(logs_folder + 'latest_pageviews_log.txt', 'w')
 f.write("Pageviews data collection last ran: %s (UTC)\n" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"))
 log_errors(f, all_added_pages, 'New pages')
 log_errors(f, languages_skipped, 'Skipped languages')
