@@ -156,10 +156,13 @@ for sheet_num in sheet_ids:
 			last_value = worksheet.col_values(fill_column-1)[row+1]
 
 #Keep last log, but rename
-log_count = len(glob.glob('logs/%s_%s_*pageviews_log.txt' % (last_month, this_year)))
+#TODO: Check if there even is a logs folder, make one if not
+logs_folder = os.path.join(__dir__,'logs/')
+
+log_count = len(glob.glob(logs_folder + '%s_%s_*pageviews_log.txt' % (last_month, this_year)))
 
 try:
-	os.rename('logs/latest_pageviews_log.txt', 'logs/%s_%s_%s_pageviews_log.txt' % (last_month, this_year, log_count+1))
+	os.rename(logs_folder + 'latest_pageviews_log.txt', logs_folder + '%s_%s_%s_pageviews_log.txt' % (last_month, this_year, log_count+1))
 except FileNotFoundError: #Don't worry if there's no file yet
 	pass
 
