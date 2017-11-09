@@ -1,0 +1,9 @@
+# Secret
+client_secret.json
+api_login.txt
+# Python things
+twltools.egg-info/
+*.pyc
+# Data files
+periodicals_data
+*pageviews_log.txt
