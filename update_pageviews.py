@@ -45,7 +45,6 @@ def add_new_language():
 	pass
 
 scope = ['https://spreadsheets.google.com/feeds']
-print(os.path.join(__dir__,'client_secret.json')
 creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(__dir__, 'client_secret.json'), scope)
 g_client = gspread.authorize(creds)
 
