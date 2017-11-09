@@ -9,7 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from calendar import monthrange
 
 #TODO: Update Global Sums when everything is collected. Maybe.
-#TODO: Output some stuff if the code runs successfully, reschedule if something went wrong
+#TODO: Reschedule if something went wrong
 #TODO: Consolidate some code e.g. logging in to a Google Sheet for use between here and metrics/periodicals
 
 __dir__ = os.path.dirname(__file__)
@@ -93,7 +93,7 @@ for sheet_num in sheet_ids:
 	last_col_date = worksheet.col_values(fill_column-1)[0]
 	if last_col_date == this_month['string']:
 		same_month = True
-		languages_skipped.append("Skipped collecting data for %s because it was already done." % current_language)
+		languages_skipped.append("%s (already done)" % current_language)
 		print("Skipping", current_language, "(already collected)")
 	else:
 		print("Collecting", current_language)
