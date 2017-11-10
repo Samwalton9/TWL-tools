@@ -41,11 +41,12 @@ login_manager.init_app(app)
 
 __dir__ = os.path.dirname(__file__)
 
-loaded_password = open(os.path.join(__dir__,'site_password')).read()[:-1]
+loaded_password = open(os.path.join(__dir__,'site_password')).readline().strip()
+print(loaded_password)
 
 users = {'admin':{'password': loaded_password}}
 
-app.secret_key = open(os.path.join(__dir__,'secret_key')).read()[:-1]
+app.secret_key = open(os.path.join(__dir__,'secret_key')).readline().strip()
 
 class User(flask_login.UserMixin):
 	pass
