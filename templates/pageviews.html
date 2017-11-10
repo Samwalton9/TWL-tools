@@ -15,9 +15,9 @@
 
   {% if type == 'files' %}
     <div class="subtext">
-      Below you will find a list of log files. The format is MONTH_YEAR, with the third number denoting how many times the script was run that month (should usually only be 1)
+      Below you will find a list of log files. The format is MONTH_YEAR, with the third number denoting extra runs in the same month.
     </div>
-    
+
     {% if results %}
       {% for result in results %}
         <li><a href="{{ url_for('individual_log', log_file=result) }}">{{ result }}</a></li>
