@@ -144,7 +144,6 @@ def list_logs(log_directory, file_pattern):
 	for log_file in file_list:
 		if fnmatch(log_file, file_pattern):
 			final_list.append(log_file)
-	print(final_list)
 	return final_list
 
 #TODO: Move into a separate file, split out some code that's duplicated elsewhere
