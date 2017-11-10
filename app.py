@@ -42,7 +42,6 @@ login_manager.init_app(app)
 __dir__ = os.path.dirname(__file__)
 
 loaded_password = open(os.path.join(__dir__,'site_password')).readline().strip()
-print(loaded_password)
 
 users = {'admin':{'password': loaded_password}}
 
