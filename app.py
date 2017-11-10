@@ -1,7 +1,7 @@
 # A good portion of this code is based on the Flask tutorial (http://flask.pocoo.org/docs/0.12/tutorial/)
 # and flask-login tutorial (https://github.com/maxcountryman/flask-login)
 #
-# Copyright (c) 2017 Sam Walton and contributors
+# Copyright (c) 2017 Wikimedia Foundation, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
