@@ -4,8 +4,19 @@
 <div class=page>
   <h1>TWL Tools/Periodicals counter</h1>
   <div class="back-button">
-  <a href="{{ url_for('index') }}">Back</a>
+    <a href="{{ url_for('index') }}">Back</a>
   </div>
+
+  <div class="header-text">
+    This data is collected by analysing data from two spreadsheets: <a href="https://docs.google.com/spreadsheets/d/1ndJiMkWvsKpEXZpE5m6bFFgJHulD3M9gDpIIfe-LsKU/edit">A-Z Sources Search</a> and <a href="https://docs.google.com/spreadsheets/d/1BCldgV2ny6YOlubciOB2dzhGlKJiWgNQVa3FLTG0180/edit">Authentication progress tracking</a>. When adding new partners to those sheets please ensure that their partner name is the same in both. EBSCO is an exception (the script fixes that one internally).
+    <br>
+    <br>
+    The data only counts partners with "Yes" in their Proxy or Bundle columns. Answers such as 'Maybe' or 'Likely' are not counted.
+    <br>
+    <br>
+    After pressing Calculate, your browser window will show that it is loading. The process can take a few minutes to complete.
+  </div>
+
   <div class="submission-button">
     <form action="{{ url_for ('periodicals') }}" method="post">
       <input type="submit" name="submit_proxy" value="Calculate">

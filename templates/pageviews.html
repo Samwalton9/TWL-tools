@@ -4,7 +4,14 @@
 <div class=page>
   <h1>TWL Tools/Pageviews log</h1>
   <div class="back-button">
-  <a href="{{ url_for('index') }}">Back</a>
+    <a href="{{ url_for('index') }}">Back</a>
+  </div>
+
+  <div class="header-text">
+    The pageviews data script runs automatically, at 00:00 UTC on the 3rd of each month (to ensure all the pageviews data for the previous month is present).
+    <br>
+    <br>
+    Below you will find a log of the last run, including any new pages that have been added to categories since the last run, any API errors that were returned, and any languages which were skipped because they were already collected (which should rarely be the case).
   </div>
 
   {% if results %}
