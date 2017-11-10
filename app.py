@@ -28,6 +28,7 @@ import gspread
 import numpy as np
 from oauth2client.service_account import ServiceAccountCredentials
 import datetime
+from fnmatch import fnmatch
 
 app = flask.Flask(__name__)
 app.config.from_object(__name__)
@@ -37,6 +38,8 @@ app.config.update(dict(
 	PASSWORD='default' #TODO: Move this out to a secret username & password
 ))
 app.config.from_envvar('TWLTOOLS_SETTINGS', silent=True)
+
+__dir__ = os.path.dirname(__file__)
 
 @app.route('/')
 def index():
@@ -57,14 +60,20 @@ def periodicals():
 
 @app.route('/pageviews')
 def pageviews():
-	#TODO: Allow user to open a previous log
 
-	try:
-		results = open('logs/latest_pageviews_log.txt', 'r').readlines()
-	except FileNotFoundError:
-		results = None
+	logs_list = list_logs(os.path.join(__dir__,"logs/"),"*.txt")
 
-	return flask.render_template('pageviews.html', results=results)
+	if len(logs_list) > 0: #Check this works if 0 files present
+		simple_list = ["_".join(i.split("_")[:3]) for i in logs_list]
+
+	return flask.render_template('pageviews.html', results=simple_list, type='files')
+
+
+@app.route('/pageviews/<log_file>')
+def individual_log(log_file):
+	results = open('logs/%s_pageviews_log.txt' % log_file, 'r').readlines()
+
+	return flask.render_template('pageviews.html', results=results, type='log')
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
@@ -85,6 +94,15 @@ def pageviews():
 # 	flask.session.pop('logged_in', None)
 # 	flask.flash('Logged out')
 # 	return flask.redirect(flask.url_for('index'))
+
+def list_logs(log_directory, file_pattern):
+	final_list = []
+	file_list = os.listdir(log_directory)
+	for log_file in file_list:
+		if fnmatch(log_file, file_pattern):
+			final_list.append(log_file)
+	print(final_list)
+	return final_list
 
 #TODO: Move into a separate file, split out some code that's duplicated elsewhere
 class ProxyNumbers():
