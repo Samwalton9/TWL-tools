@@ -6,19 +6,14 @@ h2              { font-size: 1.2em; }
 
 .page           { margin: 2em auto; width: 60em; border: 5px solid #ccc;
                   padding: 0.8em; background: white; }
-.entries        { list-style: none; margin: 0; padding: 0; }
-.entries li     { margin: 0.8em 1.2em; }
-.entries li h2  { margin-left: -1em; }
-.add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
-.add-entry dl   { font-weight: bold; }
 .metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
-                  margin-bottom: 1em; background: #fafafa; }
+                  margin-bottom: 1em; }
 .flash          { background: #cee5F5; padding: 0.5em;
                   border: 1px solid #aacbe2; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 .submission-button {margin-bottom: 1cm; text-align: center;}
 .footer 		{font-size: 0.8em; margin-top: 0.5cm;}
-.navbar 		{font-size: 1.5em; margin-top: 0.3cm; text-align: center}
+.navbar 		{font-size: 1.5em; margin-top: 0.3cm; margin-bottom: 1cm; text-align: center}
 .back-button	{margin-top: 0.3cm; margin-bottom: 1cm}
 .header-text	{margin-bottom: 0.5cm; font-size: 0.8em;}
 .subtext		{font-size: 0.8em; margin-bottom: 0.5cm}

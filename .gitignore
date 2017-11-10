@@ -1,6 +1,8 @@
 # Secret
 client_secret.json
 api_login.txt
+secret_key
+site_password
 # Python things
 twltools.egg-info/
 *.pyc

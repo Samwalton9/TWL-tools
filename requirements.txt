@@ -1,4 +1,5 @@
 flask
+flask-login
 gspread
 numpy
 oauth2client
