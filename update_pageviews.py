@@ -48,10 +48,14 @@ scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(__dir__, 'client_secret.json'), scope)
 g_client = gspread.authorize(creds)
 
-g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik') #Test sheet
+g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
 
-num_languages = 20
-sheet_ids = range(1,1+num_languages) #Confusingly, gspread doesn't count graph-only sheets as real sheets.
+worksheets = g_sheet.worksheets()
+sheets_to_edit = []
+for pageview_sheet in worksheets:
+	worksheet_title = pageview_sheet.title
+	if "pageviews" in worksheet_title and len(worksheet_title) in [12,14]:
+		sheets_to_edit.append(worksheet_title)
 
 last_month = datetime.date.today().month - 1
 this_year = datetime.date.today().year
@@ -68,10 +72,10 @@ this_month = {
 
 all_added_pages, languages_skipped, suspicious_data, api_errors = [], [], [], []
 
-for sheet_num in sheet_ids:
+for sheet_title in sheets_to_edit:
 
-	worksheet = g_sheet.get_worksheet(sheet_num) #get_worksheet is index directly, not gid
-	global_sums = g_sheet.get_worksheet(0)
+	worksheet = g_sheet.worksheet(sheet_title) #get_worksheet is index directly, not gid
+	global_sums = g_sheet.worksheet('Global Sums')
 
 	current_language = worksheet.title.split(" ")[0].lower()
 
