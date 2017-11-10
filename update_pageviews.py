@@ -74,7 +74,7 @@ all_added_pages, languages_skipped, suspicious_data, api_errors = [], [], [], []
 
 for sheet_title in sheets_to_edit:
 
-	worksheet = g_sheet.worksheet(sheet_title) #get_worksheet is index directly, not gid
+	worksheet = g_sheet.worksheet(sheet_title)
 	global_sums = g_sheet.worksheet('Global Sums')
 
 	current_language = worksheet.title.split(" ")[0].lower()
@@ -85,7 +85,6 @@ for sheet_title in sheets_to_edit:
 		p_or_m = 'p'
 
 	#Find out how many dates we already have, fill the next one
-	
 	fill_column = len(list(filter(None,worksheet.row_values(1)))) + 1
 	last_column = len(worksheet.row_values(1))
 
@@ -160,8 +159,12 @@ for sheet_title in sheets_to_edit:
 			last_value = worksheet.col_values(fill_column-1)[row+1]
 
 #Keep last log, but rename
-#TODO: Check if there even is a logs folder, make one if not
 logs_folder = os.path.join(__dir__,'logs/')
+
+#Make a logs folder if there isn't one yet
+folder_exists = os.path.isdir(logs_folder)
+if not folder_exists:
+	os.mkdir(logs_folder)
 
 log_count = len(glob.glob(logs_folder + '%s_%s_*pageviews_log.txt' % (last_month, this_year)))
 
