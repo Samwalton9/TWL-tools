@@ -5,8 +5,8 @@ import mwclient
 import os
 import glob
 from mwviews.api import PageviewsClient
-from oauth2client.service_account import ServiceAccountCredentials
 from calendar import monthrange
+import logins
 
 #TODO: Update Global Sums when everything is collected.
 #TODO: Reschedule if something went wrong
@@ -51,10 +51,7 @@ def log_errors(file, error_array, title_text, subtext=''):
 			file.write(error_text + "\n")
 
 def update_pageviews():
-	scope = ['https://spreadsheets.google.com/feeds']
-	creds = ServiceAccountCredentials.from_json_keyfile_name(
-		os.path.join(__dir__, 'client_secret.json'), scope)
-	g_client = gspread.authorize(creds)
+	g_client = logins.gspread_login()
 
 	g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
 

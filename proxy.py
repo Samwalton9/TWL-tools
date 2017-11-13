@@ -1,14 +1,9 @@
 import datetime
 import numpy as np
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import logins
 
-scope = ['https://spreadsheets.google.com/feeds']
-creds = ServiceAccountCredentials.from_json_keyfile_name(
-    'client_secret.json', scope)
-g_client = gspread.authorize(creds)
-if creds.access_token_expired:
-    g_client.login()
+g_client = logins.gspread_login()
 
 def get_worksheet(key, sheet_num):
     # Return a worksheet given a sheet key and tab number
