@@ -120,14 +120,12 @@ def update_pageviews():
 			for page in lang_page_list:
 				if page not in page_list:
 					pages_to_add.append(page)
+					page_list.append(page)
 					all_added_pages.append('%s - %s' % (current_language, page))
 
 			if len(pages_to_add) > 0:
 				for row, record in enumerate(pages_to_add):
 					worksheet.update_cell(len(page_list)+3+row, 1, record)
-
-			#Grab this data again, in case we added new pages.
-			page_list = list(filter(None,worksheet.col_values(1)[2:]))
 
 			#Initialise our array for the sheet
 			#Zero value will be overwritten with sum later
