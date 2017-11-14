@@ -4,21 +4,32 @@ import datetime
 import mwclient
 import os
 import glob
+import pycountry
 from mwviews.api import PageviewsClient
 from calendar import monthrange
 import logins
 
 #TODO: Update Global Sums when everything is collected.
 #TODO: Reschedule if something went wrong
+#TODO: Add new rows if we try to add too many pages
 
 __dir__ = os.path.dirname(__file__)
 
 ua = 'Page views collection for The Wikipedia Library. Run by User:Samwalton9'
-
 p = PageviewsClient()
 
-def mwclient_login(language, m_or_p):
-	site = mwclient.Site(('https', '%s.wiki%sedia.org' % (language, m_or_p)), clients_useragent=ua)
+g_client = logins.gspread_login()
+# Pageviews sheet
+g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
+
+def mwclient_login(language):
+
+	if language == 'meta':
+		p_m = 'm'
+	else:
+		p_m = 'p'
+
+	site = mwclient.Site(('https', '%s.wiki%sedia.org' % (language, p_m)), clients_useragent=ua)
 	f = open(os.path.join(__dir__,'api_login.txt'), 'r')
 	password = f.readline()[:-1]
 	site.login('Samwalton9API', password)
@@ -38,10 +49,44 @@ def listpages(this_site, category_name):
 			page_list.append(page.name)
 	return page_list
 
+def add_new_language(input_language, category_name):
+	worksheet_title = input_language.upper() + ' pageviews'
+	language = pycountry.languages.get(alpha_2=input_language)
 
-#TODO: Add capability to trigger the addition of a new language from TWL Tools
-def add_new_language():
-	pass
+	worksheet_exists = True
+	try:
+		g_sheet.worksheet(worksheet_title)
+	except gspread.exceptions.WorksheetNotFound:
+		worksheet_exists = False
+
+	if worksheet_exists:
+		return "A sheet for this language already exists."
+	else:
+		site = mwclient_login(input_language)
+		category_exists = site.Categories[category_name].exists
+		if category_exists:
+			g_sheet.add_worksheet(worksheet_title, 1000, 50)
+
+
+			worksheet = g_sheet.worksheet(worksheet_title)
+			worksheet.update_cell(1, 1,
+				'Category members for %s Wikipedia Library' % language.name)
+
+			# Just grab dates from another sheet we know exists
+			default_dates = list(filter(None,g_sheet.worksheet(
+				'EN pageviews').row_values(1)[1:]))
+			for ii, date in enumerate(default_dates):
+				worksheet.update_cell(1, ii+2, date)
+
+			return "New language added!"
+		else:
+			return "Category is empty or doesn't exist."
+
+	#TODO: Add default sheet contents
+	#TODO: Add Global sums row (use category_name)
+	#TODO: Add up data for global sums
+
+	return None
 
 #Log errors and notes
 def log_errors(file, error_array, title_text, subtext=''):
@@ -81,15 +126,12 @@ def collect_views(site_name, page_name, month_start, month_end, month_datetime):
 	return this_page_views
 
 def update_pageviews():
-	g_client = logins.gspread_login()
-
-	g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
 
 	worksheets = g_sheet.worksheets()
 	sheets_to_edit = []
 	for pageview_sheet in worksheets:
 		worksheet_title = pageview_sheet.title
-		if "pageviews" in worksheet_title and len(worksheet_title) in [12,14]:
+		if "pageviews" in worksheet_title and len(worksheet_title) in [12, 13, 14]:
 			sheets_to_edit.append(worksheet_title)
 
 	last_month = datetime.date.today().month - 1
@@ -117,11 +159,6 @@ def update_pageviews():
 
 		current_language = worksheet.title.split(" ")[0].lower()
 
-		if current_language == 'meta':
-			p_or_m = 'm'
-		else:
-			p_or_m = 'p'
-
 		#Check if we've already done this month for some reason
 		last_col_date = worksheet.col_values(this_month['column_number']-1)[0]
 		if last_col_date == this_month['string']:
@@ -138,10 +175,11 @@ def update_pageviews():
 				worksheet.add_cols(1)
 
 			worksheet.update_cell(1, this_month['column_number'], this_month['string'])
-			site_prefix = '%s.wiki%sedia' % (current_language, p_or_m)
 
 			#See if we need to add pages to this sheet
-			current_site = mwclient_login(current_language, p_or_m)
+			current_site = mwclient_login(current_language)
+			#TODO: Double check this prints what I think it should (lang.wiki(p|m)edia.org)
+			print(current_site.host[1])
 			global_sums_language_list = global_sums.col_values(1)
 			lang_idx = global_sums_language_list.index(current_language.lower())
 			language_category = global_sums.col_values(3)[lang_idx]
@@ -167,7 +205,8 @@ def update_pageviews():
 			# Add pageviews only if we're collecting for the latest month
 			# or if the page is new for a previous month
 			for i, month in enumerate(sheet_months):
-				print(month)
+				# Docs appears to log out after some time, keep this refreshed.
+				g_client.login()
 				for j, page_title in enumerate(page_list):
 					if month['string'] == this_month['string']:
 						page_views = collect_views(site_prefix,

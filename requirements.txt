@@ -1,5 +1,9 @@
+# Flask
 flask
 flask-login
+wtforms
+# Other
+pycountry
 gspread
 numpy
 oauth2client

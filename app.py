@@ -25,9 +25,11 @@
 
 import flask
 import flask_login
+import wtforms
 import os
 from fnmatch import fnmatch
 import proxy
+import update_pageviews
 
 app = flask.Flask(__name__)
 app.config.from_object(__name__)
@@ -51,6 +53,10 @@ app.secret_key = open(os.path.join(__dir__, 'secret_key')).readline().strip()
 class User(flask_login.UserMixin):
     pass
 
+class PageviewsForm(wtforms.Form):
+    form_language = wtforms.StringField(
+        'Language', [wtforms.validators.Length(min=2, max=4)])
+    form_category = wtforms.StringField('Category')
 
 @login_manager.user_loader
 def load_user(username):
@@ -94,10 +100,17 @@ def periodicals():
     return flask.render_template('periodicals.html', results=results)
 
 
-@app.route('/pageviews')
+@app.route('/pageviews', methods=['GET', 'POST'])
 @flask_login.login_required
 def pageviews():
+    # Form input for adding languages
+    form = PageviewsForm(flask.request.form)
+    if flask.request.method == 'POST' and form.validate():
+        add_language = update_pageviews.add_new_language(
+            form.form_language.data, form.form_category.data)
+        flask.flash(add_language)
 
+    # Display pageview logs
     logs_list = list_logs(os.path.join(__dir__, "logs/"), "*.txt")
 
     # TODO: Check this works if 0 files present
@@ -108,8 +121,7 @@ def pageviews():
         simple_list.insert(0, 'latest')
 
     return flask.render_template('pageviews.html',
-                                 results=simple_list, type='files')
-
+                                 results=simple_list, type='files', form=form)
 
 @app.route('/pageviews/<log_file>')
 @flask_login.login_required
