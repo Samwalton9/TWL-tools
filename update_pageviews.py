@@ -50,6 +50,36 @@ def log_errors(file, error_array, title_text, subtext=''):
 		for error_text in error_array:
 			file.write(error_text + "\n")
 
+def month_dict(month, year, col):
+
+	days_in_month = monthrange(year, month)[1]
+
+	return {
+		'string': '%s/1/%s' %(month, year),
+		'start_date': datetime.date(year, month, 1),
+		'end_date': datetime.date(year, month, days_in_month),
+		'as_datetime': datetime.datetime(year, month, 1),
+		'column_number': col
+	}
+
+def collect_views(site_name, page_name, month_start, month_end, month_datetime):
+	try:
+		daily_views = p.article_views(site_name, page_name,
+		 								start = month_start,
+		  								end = month_end,
+		  								granularity = 'monthly',
+		  								agent = 'user')
+
+		this_page_views = daily_views[month_datetime][page_name.replace(' ','_')]
+	except Exception:
+		this_page_views = ''
+
+	#None returned if no pageviews data (not zero pageviews)
+	if this_page_views == None:
+		this_page_views = ''
+
+	return this_page_views
+
 def update_pageviews():
 	g_client = logins.gspread_login()
 
@@ -68,19 +98,22 @@ def update_pageviews():
 		this_year -= 1
 	days_this_month = monthrange(this_year, last_month)[1]
 
-	this_month = {
-		'string': '%s/1/%s' %(last_month, this_year),
-		'start_date': datetime.date(this_year, last_month, 1),
-		'end_date': datetime.date(this_year, last_month, days_this_month),
-		'as_datetime': datetime.datetime(this_year, last_month, 1)
-	}
-
-	all_added_pages, languages_skipped, suspicious_data, api_errors = [], [], [], []
+	all_added_pages, languages_skipped = [], []
 
 	for sheet_title in sheets_to_edit:
 
 		worksheet = g_sheet.worksheet(sheet_title)
 		global_sums = g_sheet.worksheet('Global Sums')
+
+		sheet_dates = list(filter(None,g_sheet.worksheet(sheet_title).row_values(1)[1:]))
+		full_months = []
+		for col, column_date in enumerate(sheet_dates):
+			date_split = column_date.split('/')
+			col_month = int(date_split[0])
+			col_year = int(date_split[-1])
+			full_months.append(month_dict(col_month, col_year, col+2))
+		this_month = month_dict(last_month, this_year, len(sheet_dates)+2)
+		full_months.append(this_month)
 
 		current_language = worksheet.title.split(" ")[0].lower()
 
@@ -89,11 +122,8 @@ def update_pageviews():
 		else:
 			p_or_m = 'p'
 
-		# Find out how many dates we already have, fill the next one
-		fill_column = len(list(filter(None,worksheet.row_values(1)))) + 1
-
 		#Check if we've already done this month for some reason
-		last_col_date = worksheet.col_values(fill_column-1)[0]
+		last_col_date = worksheet.col_values(this_month['column_number']-1)[0]
 		if last_col_date == this_month['string']:
 			same_month = True
 			languages_skipped.append("%s (already done)" % current_language)
@@ -104,8 +134,11 @@ def update_pageviews():
 
 		if same_month == False:
 			#Check if we're at the last column, and add one if so
-			if fill_column > worksheet.col_count:
+			if this_month['column_number'] > worksheet.col_count:
 				worksheet.add_cols(1)
+
+			worksheet.update_cell(1, this_month['column_number'], this_month['string'])
+			site_prefix = '%s.wiki%sedia' % (current_language, p_or_m)
 
 			#See if we need to add pages to this sheet
 			current_site = mwclient_login(current_language, p_or_m)
@@ -114,7 +147,8 @@ def update_pageviews():
 			language_category = global_sums.col_values(3)[lang_idx]
 			lang_page_list = listpages(current_site, language_category)
 
-			page_list = list(filter(None,worksheet.col_values(1)[2:]))
+			page_list = list(filter(None,worksheet.col_values(1)[1:]))
+			previous_pages = len(page_list)
 
 			pages_to_add = []
 			for page in lang_page_list:
@@ -125,40 +159,31 @@ def update_pageviews():
 
 			if len(pages_to_add) > 0:
 				for row, record in enumerate(pages_to_add):
-					worksheet.update_cell(len(page_list)+3+row, 1, record)
+					worksheet.update_cell(previous_pages+2+row, 1, record)
+				sheet_months = full_months
+			else:
+				sheet_months = [this_month]
 
-			#Initialise our array for the sheet
-			#Zero value will be overwritten with sum later
-			views_array = [this_month['string'], 0]
-
-			#article_views can take a list, but returns dict, so
-			#looping individual pages as a simple way to retain order
-			for page_title in page_list:
-				try:
-					daily_views = p.article_views('%s.wiki%sedia' % (current_language, p_or_m), page_title,
-					 								start = this_month['start_date'],
-					  								end = this_month['end_date'],
-					  								granularity = 'monthly',
-					  								agent = 'user')
-
-					this_page_views = daily_views[this_month['as_datetime']][page_title.replace(' ','_')]
-				except Exception:
-					api_errors.append('Pageviews API error for %s - %s' %(current_language, page_title))
-					this_page_views = ''
-
-				#None returned if no pageviews data (not zero pageviews)
-				if this_page_views == None:
-					this_page_views = ''
-
-				views_array.append(this_page_views)
-
-			#Ignore any '' values when summing
-			views_array[1] = sum([i for i in views_array[2:] if not isinstance(i, str)])
-
-			#Update Sheet
-			for row, record in enumerate(views_array):
-				worksheet.update_cell(row+1, fill_column, record)
-				last_value = worksheet.col_values(fill_column-1)[row+1]
+			# Add pageviews only if we're collecting for the latest month
+			# or if the page is new for a previous month
+			for i, month in enumerate(sheet_months):
+				print(month)
+				for j, page_title in enumerate(page_list):
+					if month['string'] == this_month['string']:
+						page_views = collect_views(site_prefix,
+												   page_title,
+												   month['start_date'],
+									  			   month['end_date'],
+									  			   month['as_datetime'])
+						worksheet.update_cell(j+2, i+2, page_views)
+					else:
+						if page_title in pages_to_add:
+							page_views = collect_views(site_prefix,
+												   	   page_title,
+												       month['start_date'],
+									  			   	   month['end_date'],
+									  			       month['as_datetime'])
+							worksheet.update_cell(j+2, i+2, page_views)
 
 	#Keep last log, but rename
 	logs_folder = os.path.join(__dir__,'logs/')
@@ -179,8 +204,6 @@ def update_pageviews():
 		f.write("Pageviews data collection last ran: %s (UTC)\n" % datetime.datetime.now().strftime("%d %B %Y at %H:%M"))
 		log_errors(f, all_added_pages, 'New pages')
 		log_errors(f, languages_skipped, 'Skipped languages')
-		log_errors(f, api_errors, 'API errors',
-					 'Likely the result of a page being deleted or moved.\n')
 
 if __name__ == '__main__':
 	update_pageviews()
