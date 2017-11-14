@@ -205,9 +205,9 @@ def update_pageviews():
 			# Add pageviews only if we're collecting for the latest month
 			# or if the page is new for a previous month
 			for i, month in enumerate(sheet_months):
-				# Docs appears to log out after some time, keep this refreshed.
-				g_client.login()
 				for j, page_title in enumerate(page_list):
+					# Docs appears to log out after some time, keep this refreshed.
+					g_client.login()
 					if month['string'] == this_month['string']:
 						page_views = collect_views(current_site.host[1][:-4],
 												   page_title,
