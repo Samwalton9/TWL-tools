@@ -12,6 +12,7 @@ import logins
 #TODO: Update Global Sums when everything is collected.
 #TODO: Reschedule if something went wrong
 #TODO: Add new rows if we try to add too many pages
+#TODO: Investigate and fix SSLError when trying to do gpsread stuff while pageviews is collecting
 
 __dir__ = os.path.dirname(__file__)
 
@@ -20,6 +21,7 @@ p = PageviewsClient()
 
 g_client = logins.gspread_login()
 # Pageviews sheet
+#g_sheet = g_client.open_by_key('17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg') # Test sheet
 g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
 
 def mwclient_login(language):
@@ -178,8 +180,6 @@ def update_pageviews():
 
 			#See if we need to add pages to this sheet
 			current_site = mwclient_login(current_language)
-			#TODO: Double check this prints what I think it should (lang.wiki(p|m)edia.org)
-			print(current_site.host[1])
 			global_sums_language_list = global_sums.col_values(1)
 			lang_idx = global_sums_language_list.index(current_language.lower())
 			language_category = global_sums.col_values(3)[lang_idx]
@@ -209,7 +209,7 @@ def update_pageviews():
 				g_client.login()
 				for j, page_title in enumerate(page_list):
 					if month['string'] == this_month['string']:
-						page_views = collect_views(site_prefix,
+						page_views = collect_views(current_site.host[1][:-4],
 												   page_title,
 												   month['start_date'],
 									  			   month['end_date'],
@@ -217,7 +217,7 @@ def update_pageviews():
 						worksheet.update_cell(j+2, i+2, page_views)
 					else:
 						if page_title in pages_to_add:
-							page_views = collect_views(site_prefix,
+							page_views = collect_views(current_site.host[1][:-4],
 												   	   page_title,
 												       month['start_date'],
 									  			   	   month['end_date'],
