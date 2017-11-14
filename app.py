@@ -44,7 +44,6 @@ __dir__ = os.path.dirname(__file__)
 loaded_password = open(os.path.join(__dir__,
                                     'site_password')).readline().strip()
 
-# TODO: Modify into just a password. No need for redundent single username
 users = {'admin': {'password': loaded_password}}
 
 app.secret_key = open(os.path.join(__dir__, 'secret_key')).readline().strip()
