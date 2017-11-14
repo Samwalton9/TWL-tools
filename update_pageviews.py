@@ -32,9 +32,10 @@ def mwclient_login(language):
 		p_m = 'p'
 
 	site = mwclient.Site(('https', '%s.wiki%sedia.org' % (language, p_m)), clients_useragent=ua)
-	f = open(os.path.join(__dir__,'api_login.txt'), 'r')
-	password = f.readline()[:-1]
-	site.login('Samwalton9API', password)
+	with open(os.path.join(__dir__,'api_login.txt'), 'r') as f:
+		username = f.readline().strip()
+		password = f.readline().strip()
+		site.login(username, password)
 
 	return site
 
