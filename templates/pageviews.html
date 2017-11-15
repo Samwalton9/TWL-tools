@@ -23,19 +23,19 @@
     The pageviews data script runs automatically, at 00:00 UTC on the 3rd of each month (to ensure all the pageviews data for the previous month is present).
     <br>
   </div>
-  <h2>Add new language</h2>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-  <form method=post>
-    <dl>
-      {{ render_field(form.form_language) }}
-      {{ render_field(form.form_category) }}
-    </dl>
-    <p><input type=submit value=Submit>
-  </form>
-  <h2>Collection logs</h2>
   {% if type == 'files' %}
+    <h2>Add new language</h2>
+    {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+    {% endfor %}
+    <form method=post>
+      <dl>
+        {{ render_field(form.form_language) }}
+        {{ render_field(form.form_category) }}
+      </dl>
+      <p><input type=submit value=Submit>
+    </form>
+    <h2>Collection logs</h2>
     <div class="subtext">
       Below you will find a list of log files. The format is MONTH_YEAR, with the third number denoting extra runs in the same month.
     </div>
