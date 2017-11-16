@@ -231,7 +231,11 @@ def update_pageviews():
                                                    month['start_date'],
                                                    month['end_date'],
                                                    month['as_datetime'])
-                        worksheet.update_cell(j+2, i+2, page_views)
+                        try:
+                            worksheet.update_cell(j+2, i+2, page_views)
+                        except spread.exceptions.RequestError:
+                            sleep(30)
+                            worksheet.update_cell(j+2, i+2, page_views)
                     else:
                         if page_title in pages_to_add:
                             page_views = collect_views(current_site.host[1][:-4],
@@ -239,6 +243,10 @@ def update_pageviews():
                                                        month['start_date'],
                                                        month['end_date'],
                                                        month['as_datetime'])
+                        try:
+                            worksheet.update_cell(j+2, i+2, page_views)
+                        except spread.exceptions.RequestError:
+                            sleep(30)
                             worksheet.update_cell(j+2, i+2, page_views)
 
     # Keep last log, but rename
