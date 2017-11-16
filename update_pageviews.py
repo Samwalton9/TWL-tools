@@ -243,11 +243,11 @@ def update_pageviews():
                             page_views = collect_views(current_site.host[1][:-4],
                                                        page_title,
                                                        month)
-                        try:
-                            worksheet.update_cell(j+2, i+2, page_views)
-                        except gspread.exceptions.RequestError:
-                            time.sleep(30)
-                            worksheet.update_cell(j+2, i+2, page_views)
+                            try:
+                                worksheet.update_cell(j+2, i+2, page_views)
+                            except gspread.exceptions.RequestError:
+                                time.sleep(30)
+                                worksheet.update_cell(j+2, i+2, page_views)
 
     # Keep last log, but rename
     logs_folder = os.path.join(__dir__, 'logs/')
