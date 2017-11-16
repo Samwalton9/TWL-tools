@@ -3,10 +3,9 @@ import numpy as np
 import gspread
 import logins
 
-g_client = logins.gspread_login()
-
 def get_worksheet(key, sheet_num):
     # Return a worksheet given a sheet key and tab number
+    g_client = logins.gspread_login()
     g_sheet = g_client.open_by_key(key)
     worksheet = g_sheet.get_worksheet(sheet_num)
 
