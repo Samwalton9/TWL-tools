@@ -234,7 +234,7 @@ def update_pageviews():
                                                    month)
                         try:
                             worksheet.update_cell(j+2, i+2, page_views)
-                        except spread.exceptions.RequestError:
+                        except gspread.exceptions.RequestError:
                             time.sleep(30)
                             worksheet.update_cell(j+2, i+2, page_views)
                     else:
@@ -244,7 +244,7 @@ def update_pageviews():
                                                        month)
                         try:
                             worksheet.update_cell(j+2, i+2, page_views)
-                        except spread.exceptions.RequestError:
+                        except gspread.exceptions.RequestError:
                             time.sleep(30)
                             worksheet.update_cell(j+2, i+2, page_views)
 
