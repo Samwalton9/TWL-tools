@@ -12,7 +12,6 @@ import logins
 
 # TODO: Update Global Sums when everything is collected.
 # TODO: Reschedule if something went wrong
-# TODO: Add new rows if we try to add too many pages
 # TODO: Investigate and fix SSLError when trying to do
 #       gpsread stuff while pageviews is collecting
 
@@ -120,17 +119,16 @@ def month_dict(month, year, col):
     }
 
 
-def collect_views(site_name, page_name,
-                  month_start, month_end, month_datetime):
+def collect_views(site_name, page_name, month):
     try:
         daily_views = p.article_views(site_name, page_name,
-                                      start=month_start,
-                                      end=month_end,
+                                      start=month['start_date'],
+                                      end=month['end_date'],
                                       granularity='monthly',
                                       agent='user')
 
         formatted_page_name = page_name.replace(' ', '_')
-        this_page_views = daily_views[month_datetime][formatted_page_name]
+        this_page_views = daily_views[month['as_datetime']][formatted_page_name]
     except Exception:
         this_page_views = ''
 
@@ -214,8 +212,12 @@ def update_pageviews():
                     all_added_pages.append('%s - %s' % (current_language, page))
 
             if len(pages_to_add) > 0:
+                num_rows = worksheet.row_count
                 for row, record in enumerate(pages_to_add):
-                    worksheet.update_cell(previous_pages+2+row, 1, record)
+                    update_row = previous_pages+2+row
+                    if update_row > num_rows:
+                        worksheet.add_rows(10)
+                    worksheet.update_cell(update_row, 1, record)
                 sheet_months = full_months
             else:
                 sheet_months = [this_month]
@@ -229,9 +231,7 @@ def update_pageviews():
                     if month['string'] == this_month['string']:
                         page_views = collect_views(current_site.host[1][:-4],
                                                    page_title,
-                                                   month['start_date'],
-                                                   month['end_date'],
-                                                   month['as_datetime'])
+                                                   month)
                         try:
                             worksheet.update_cell(j+2, i+2, page_views)
                         except spread.exceptions.RequestError:
@@ -241,9 +241,7 @@ def update_pageviews():
                         if page_title in pages_to_add:
                             page_views = collect_views(current_site.host[1][:-4],
                                                        page_title,
-                                                       month['start_date'],
-                                                       month['end_date'],
-                                                       month['as_datetime'])
+                                                       month)
                         try:
                             worksheet.update_cell(j+2, i+2, page_views)
                         except spread.exceptions.RequestError:
