@@ -129,7 +129,8 @@ def collect_views(site_name, page_name, month):
 
         formatted_page_name = page_name.replace(' ', '_')
         this_page_views = daily_views[month['as_datetime']][formatted_page_name]
-    except Exception:
+    except Exception as e:
+        print(e)
         this_page_views = ''
 
     # None returned if no pageviews data (not zero pageviews)
