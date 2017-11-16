@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import gspread
 import datetime
+import time
 import mwclient
 import os
 import glob
@@ -234,7 +235,7 @@ def update_pageviews():
                         try:
                             worksheet.update_cell(j+2, i+2, page_views)
                         except spread.exceptions.RequestError:
-                            sleep(30)
+                            time.sleep(30)
                             worksheet.update_cell(j+2, i+2, page_views)
                     else:
                         if page_title in pages_to_add:
@@ -246,7 +247,7 @@ def update_pageviews():
                         try:
                             worksheet.update_cell(j+2, i+2, page_views)
                         except spread.exceptions.RequestError:
-                            sleep(30)
+                            time.sleep(30)
                             worksheet.update_cell(j+2, i+2, page_views)
 
     # Keep last log, but rename
