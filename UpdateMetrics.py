@@ -44,13 +44,13 @@ current_site = None
 for i, search_term in enumerate(url_list):
  num_urls = 0
  url_language = language_list[i].strip()
- print partner_name_list[i], "- %s/%s" %(i+1, len(url_list))
+ print(partner_name_list[i], "- %s/%s" %(i+1, len(url_list)))
 
  if not same_day or (same_day == True and last_data[i+1]) == '': #Ignore any existing data for today
 
   if "." in search_term: #Only do this if it will be time efficient and a URL
    if not signed_in or current_site != url_language: #Do blocks of the same language without signing in each time.
-    print "New language, reconnecting to DB. (%s => %s)" %(current_site, url_language)
+    print("New language, reconnecting to DB. (%s => %s)" %(current_site, url_language))
 
     if search_term[-1] == "/":
       search_term = search_term[:-1]  # Remove trailing slashes
@@ -81,7 +81,7 @@ for i, search_term in enumerate(url_list):
     # signed_in = True
     # current_site = site.host[1][0:2]
  	 
-   print "Collecting..."
+   print("Collecting...")
    for current_protocol in protocols:
     url_pattern = current_protocol + "://" + '.'.join(url_split_reversed) + ".%"
 
@@ -92,7 +92,7 @@ for i, search_term in enumerate(url_list):
     # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
     # this_num_urls = sum([1 for _ in exturls])
     # num_urls += this_num_urls
-    print current_protocol, this_num_urls
+    print(current_protocol, this_num_urls)
 
   else:
    # Do a mwclient search for text (or DB?)
@@ -101,10 +101,10 @@ for i, search_term in enumerate(url_list):
 
   number_of_urls.append(num_urls)
   
-  print num_urls
+  print(num_urls)
  else:
   number_of_urls.append(last_data[i+1])
-  print 'Already recorded.'
+  print('Already recorded.')
 
 if same_day == False:
  worksheet.add_cols(1) #Add a new column for today
