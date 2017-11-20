@@ -6,8 +6,8 @@ import numpy as np
 import logins
 
 g_client = logins.gspread_login()
-#g_sheet = g_client.open_by_key('1sVYW4mOAniTq6XKDPSsH-UMrTRzvhPyE7mLQHuzNIi8') #Test sheet
-g_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM') #Live sheet
+g_sheet = g_client.open_by_key('1sVYW4mOAniTq6XKDPSsH-UMrTRzvhPyE7mLQHuzNIi8') #Test sheet
+#g_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM') #Live sheet
 worksheet = g_sheet.get_worksheet(0)
 
 col_numbers = worksheet.col_count
@@ -52,7 +52,14 @@ for i, search_term in enumerate(url_list):
    if not signed_in or current_site != url_language: #Do blocks of the same language without signing in each time.
     print "New language, reconnecting to DB. (%s => %s)" %(current_site, url_language)
 
-    url_split_reversed = search.term.split(".")[::-1]
+    url_split_dots = search_term.split(".")
+    if "*" in url_split_dots:
+      url_split_dots = url_split_dots[1:]
+    if "/" in url_split_dots:
+      url_split_reversed = url_split_dots[:-1][::-1]
+      url_split_reversed.append(url_split_dots[-1])
+    else:
+      url_split_reversed = url_split_dots[::-1]
 
     db = oursql.connect(db = '%swiki-p' % url_language,
                         host = '%swiki-p.rrdb.toolserver.org' % url_language,
