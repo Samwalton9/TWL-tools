@@ -1,6 +1,6 @@
 import gspread
 import time
-import oursql
+import sqlite3
 import mwclient
 import numpy as np
 import logins
@@ -64,7 +64,7 @@ for i, search_term in enumerate(url_list):
     else:
       url_split_reversed = url_split_dots[::-1]
 
-    db = oursql.connect(db = '%swiki-p' % url_language,
+    db = sqlite3.connect(db = '%swiki-p' % url_language,
                         host = '%swiki-p.rrdb.toolserver.org' % url_language,
                         read_default_file = os.path.expanduser("~/replica.my.cnf"),
                         charset=None,
@@ -85,10 +85,10 @@ for i, search_term in enumerate(url_list):
    for current_protocol in protocols:
     url_pattern = current_protocol + "://" + '.'.join(url_split_reversed) + ".%"
 
-    cursor.execute('''SELECT COUNT(*) FROM page, externallinks
-                      WHERE page_id = el_from
-                      AND el_index LIKE ?
-                      ''', url_pattern)
+    this_num_urls = cursor.execute('''SELECT COUNT(*) FROM page, externallinks
+                                      WHERE page_id = el_from
+                                      AND el_index LIKE ?
+                                      ''', url_pattern)
     # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
     # this_num_urls = sum([1 for _ in exturls])
     # num_urls += this_num_urls
