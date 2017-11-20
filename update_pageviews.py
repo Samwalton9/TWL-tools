@@ -10,7 +10,6 @@ from mwviews.api import PageviewsClient
 from calendar import monthrange
 import logins
 
-# TODO: Update Global Sums when everything is collected.
 # TODO: Reschedule if something went wrong
 # TODO: Investigate and fix SSLError when trying to do
 #       gpsread stuff while pageviews is collecting
@@ -22,8 +21,9 @@ p = PageviewsClient()
 
 g_client = logins.gspread_login()
 # Test sheet - 17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg
+# Live sheet - 1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik
 # Pageviews sheet
-g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
+g_sheet = g_client.open_by_key('17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg')
 
 
 def mwclient_login(language):
@@ -85,8 +85,8 @@ def add_new_language(input_language, category_name):
             # Just grab dates from another sheet we know exists
             default_dates = list(filter(None, g_sheet.worksheet(
                 'EN pageviews').row_values(1)[1:]))
-            for ii, date in enumerate(default_dates):
-                worksheet.update_cell(1, ii+2, date)
+            for i, date in enumerate(default_dates):
+                worksheet.update_cell(1, i+2, date)
 
             return "New language added!"
         else:
@@ -130,7 +130,6 @@ def collect_views(site_name, page_name, month):
         formatted_page_name = page_name.replace(' ', '_')
         this_page_views = daily_views[month['as_datetime']][formatted_page_name]
     except Exception as e:
-        print(e)
         this_page_views = ''
 
     # None returned if no pageviews data (not zero pageviews)
@@ -226,28 +225,60 @@ def update_pageviews():
             # Add pageviews only if we're collecting for the latest month
             # or if the page is new for a previous month
             for i, month in enumerate(sheet_months):
+                if len(sheet_months) == 1:
+                    upd_col = this_month['column_number']
+                else:
+                    upd_col = i+2
                 for j, page_title in enumerate(page_list):
                     # Try to keep Docs logged in.
                     g_client.login()
-                    if month['string'] == this_month['string']:
+                    if month['string'] == this_month['string'] or page_title in pages_to_add:
                         page_views = collect_views(current_site.host[1][:-4],
                                                    page_title,
                                                    month)
                         try:
-                            worksheet.update_cell(j+2, i+2, page_views)
-                        except gspread.exceptions.RequestError:
-                            time.sleep(30)
-                            worksheet.update_cell(j+2, i+2, page_views)
-                    else:
-                        if page_title in pages_to_add:
-                            page_views = collect_views(current_site.host[1][:-4],
-                                                       page_title,
-                                                       month)
                             try:
-                                worksheet.update_cell(j+2, i+2, page_views)
-                            except gspread.exceptions.RequestError:
-                                time.sleep(30)
-                                worksheet.update_cell(j+2, i+2, page_views)
+                                worksheet.update_cell(j+2, upd_col, page_views)
+                            # A gspread bug causes a TypeError to be raised
+                            # in the process of returning a RequestError
+                            # while asking to wait 30s and try again.
+                            # Rarely, but sometimes, errors twice.
+                            except gspread.exceptions.RequestError as e:
+                                pass
+                        except TypeError:
+                            time.sleep(30)
+                            worksheet.update_cell(j+2, upd_col, page_views)
+
+    # Update Global Sums
+    print("Updating global sums sheet")
+    g_sums_languages = global_sums.col_values(1)[4:4+len(sheets_to_edit)]
+    g_dates = list(filter(None, global_sums.row_values(1)[4:]))
+    if g_dates[-1] != this_month['string']:
+        global_sums.add_cols(1)
+        g_dates.append(this_month['string'])
+    for ii, lang in enumerate(g_sums_languages):
+        g_worksheet = g_sheet.worksheet('%s pageviews' % lang.upper())
+        for jj, g_month in enumerate(g_dates):
+            g_row = ii + 5
+            g_col = jj + 5
+            pageview_values = list(filter(None, g_worksheet.col_values(g_col-3)[1:]))
+            cell_sum = sum([int(i) for i in pageview_values])
+            global_sums.update_cell(g_row, g_col, cell_sum)
+
+    # Code would be more efficient if we reversed the above two for loops
+    # But outweighed by the extra API calls necessary, so requires us to loop again here
+    for jj, g_month in enumerate(g_dates):
+        this_col = list(filter(None, global_sums.col_values(jj+5)[4:]))
+        total, global_total = 0, 0
+        for ii, lang in enumerate(g_sums_languages):
+            if lang != 'en':
+                global_total += int(this_col[ii])
+            total += int(this_col[ii])
+        fraction = 100*(global_total/float(total))
+        global_sums.update_cell(2, jj+5, total)
+        global_sums.update_cell(3, jj+5, global_total)
+        global_sums.update_cell(4, jj+5, '%.1f' % fraction)
+
 
     # Keep last log, but rename
     logs_folder = os.path.join(__dir__, 'logs/')
