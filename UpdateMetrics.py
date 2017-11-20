@@ -52,6 +52,9 @@ for i, search_term in enumerate(url_list):
    if not signed_in or current_site != url_language: #Do blocks of the same language without signing in each time.
     print "New language, reconnecting to DB. (%s => %s)" %(current_site, url_language)
 
+    if search_term[-1] == "/":
+      search_term = search_term[:-1]  # Remove trailing slashes
+
     url_split_dots = search_term.split(".")
     if "*" in url_split_dots:
       url_split_dots = url_split_dots[1:]
