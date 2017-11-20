@@ -1,7 +1,6 @@
 import gspread
 import time
-import sqlite3
-import os
+import oursql
 import mwclient
 import numpy as np
 import logins
@@ -65,7 +64,12 @@ for i, search_term in enumerate(url_list):
     else:
       url_split_reversed = url_split_dots[::-1]
 
-    db = sqlite3.connect(database = '%swiki-p.rrdb.toolserver.org' % url_language)
+    db = oursql.connect(db = '%swiki-p' % url_language,
+                        host = '%swiki-p.rrdb.toolserver.org' % url_language,
+                        read_default_file = os.path.expanduser("~/replica.my.cnf"),
+                        charset=None,
+                        use_unicode=False
+                        )
     cursor = db.cursor()
     # site = mwclient.Site(('https', '%s.wikipedia.org' %language_list[i].strip()), clients_useragent=ua)
 
