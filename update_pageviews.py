@@ -231,7 +231,7 @@ def update_pageviews():
                     upd_col = i+2
                 for j, page_title in enumerate(page_list):
                     # Try to keep Docs logged in.
-                    logins.gspread_login()
+                    g_client.login()
                     if month['string'] == this_month['string'] or page_title in pages_to_add:
                         page_views = collect_views(current_site.host[1][:-4],
                                                    page_title,
@@ -244,6 +244,7 @@ def update_pageviews():
                             # while asking to wait 30s and try again.
                             # Rarely, but sometimes, errors twice.
                             except gspread.exceptions.RequestError as e:
+                                g_client.login()
                                 pass
                         except TypeError:
                             time.sleep(30)
@@ -257,6 +258,7 @@ def update_pageviews():
         global_sums.add_cols(1)
         g_dates.append(this_month['string'])
     for ii, lang in enumerate(g_sums_languages):
+        print(lang)
         g_worksheet = g_sheet.worksheet('%s pageviews' % lang.upper())
         for jj, g_month in enumerate(g_dates):
             g_row = ii + 5
@@ -277,7 +279,7 @@ def update_pageviews():
         fraction = 100*(global_total/float(total))
         global_sums.update_cell(2, jj+5, total)
         global_sums.update_cell(3, jj+5, global_total)
-        global_sums.update_cell(4, jj+5, '%.1f' % fraction)
+        global_sums.update_cell(4, jj+5, '%.1f%' % fraction)
 
 
     # Keep last log, but rename
