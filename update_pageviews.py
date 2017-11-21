@@ -231,7 +231,7 @@ def update_pageviews():
                     upd_col = i+2
                 for j, page_title in enumerate(page_list):
                     # Try to keep Docs logged in.
-                    g_client.login()
+                    logins.gspread_login()
                     if month['string'] == this_month['string'] or page_title in pages_to_add:
                         page_views = collect_views(current_site.host[1][:-4],
                                                    page_title,
