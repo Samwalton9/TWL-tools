@@ -112,12 +112,13 @@ def pageviews():
     # Display pageview logs
     logs_list = list_logs(os.path.join(__dir__, "logs/"), "*.txt")
 
-    # TODO: Check this works if 0 files present
     if len(logs_list) > 0:
         simple_list = sorted(["_".join(i.split("_")[:3])
                              for i in logs_list
                              if 'latest' not in i])
         simple_list.insert(0, 'latest')
+    else:
+        simple_list = None
 
     return flask.render_template('pageviews.html',
                                  results=simple_list, type='files', form=form)

@@ -23,6 +23,7 @@
     The pageviews data script runs automatically, at 00:00 UTC on the 3rd of each month (to ensure all the pageviews data for the previous month is present).
     <br>
   </div>
+
   {% if type == 'files' %}
     <h2>Add new language</h2>
     {% for message in get_flashed_messages() %}
@@ -35,6 +36,7 @@
       </dl>
       <p><input type=submit value=Submit>
     </form>
+    
     <h2>Collection logs</h2>
     <div class="subtext">
       Below you will find a list of log files. The format is MONTH_YEAR, with the third number denoting extra runs in the same month.
@@ -42,7 +44,7 @@
 
     {% if results %}
       {% for result in results %}
-        <li><a href="{{ url_for('individual_log', log_file=result) }}">{{ result }}</a></li>
+        <li><a href="{{ url_for('individual_log', log_file=result) }}">{{ result.capitalize() }}</a></li>
       {% endfor %}
     {% else %}
       Pageviews have either not yet been calculated, or the log files were deleted.
