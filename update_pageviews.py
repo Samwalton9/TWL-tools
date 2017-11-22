@@ -23,7 +23,7 @@ g_client = logins.gspread_login()
 # Test sheet - 17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg
 # Live sheet - 1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik
 # Pageviews sheet
-g_sheet = g_client.open_by_key('17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg')
+g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
 
 
 def mwclient_login(language):
