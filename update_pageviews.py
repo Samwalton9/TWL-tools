@@ -23,7 +23,8 @@ g_client = logins.gspread_login()
 # Test sheet - 17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg
 # Live sheet - 1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik
 # Pageviews sheet
-g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
+g_sheet = g_client.open_by_key('17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg')
+global_sums = g_sheet.worksheet('Global Sums')
 
 
 def mwclient_login(language):
@@ -60,6 +61,8 @@ def listpages(this_site, category_name):
 
 
 def add_new_language(input_language, category_name):
+    input_language = input_language.lower()
+
     worksheet_title = input_language.upper() + ' pageviews'
     language = pycountry.languages.get(alpha_2=input_language)
 
@@ -88,12 +91,17 @@ def add_new_language(input_language, category_name):
             for i, date in enumerate(default_dates):
                 worksheet.update_cell(1, i+2, date)
 
+            offset = 4
+            languages = global_sums.col_values(1)[offset:]
+            lang_idx = languages.index('meta')  # Should be the last one
+            new_row = lang_idx + offset + 1
+            language_category = global_sums.insert_row('',index=new_row)
+            global_sums.update_cell(new_row, 1, input_language)
+            global_sums.update_cell(new_row, 3, category_name)
+
             return "New language added!"
         else:
             return "Category is empty or doesn't exist."
-
-    # TODO: Add Global sums row (use category_name)
-    # TODO: Add up data for global sums
 
     return None
 
@@ -160,7 +168,6 @@ def update_pageviews():
     for sheet_title in sheets_to_edit:
 
         worksheet = g_sheet.worksheet(sheet_title)
-        global_sums = g_sheet.worksheet('Global Sums')
 
         date_row = g_sheet.worksheet(sheet_title).row_values(1)[1:]
         sheet_dates = list(filter(None, date_row))
@@ -251,6 +258,8 @@ def update_pageviews():
                             worksheet.update_cell(j+2, upd_col, page_views)
 
     # Update Global Sums
+    # TODO: Update total pages automatically
+    # TODO: Only back-date summing if we added new pages for a language/date
     print("Updating global sums sheet")
     g_sums_languages = global_sums.col_values(1)[4:4+len(sheets_to_edit)]
     g_dates = list(filter(None, global_sums.row_values(1)[4:]))
@@ -279,7 +288,7 @@ def update_pageviews():
         fraction = 100*(global_total/float(total))
         global_sums.update_cell(2, jj+5, total)
         global_sums.update_cell(3, jj+5, global_total)
-        global_sums.update_cell(4, jj+5, '%.1f%' % fraction)
+        global_sums.update_cell(4, jj+5, '%.1f%%' % fraction)
 
 
     # Keep last log, but rename
