@@ -27,7 +27,7 @@ g_sheet = g_client.open_by_key('17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg')
 global_sums = g_sheet.worksheet('Global Sums')
 
 
-def mwclient_login(language):
+def mwclient_login(language, user_agent=ua):
 
     if language == 'meta':
         p_m = 'm'
@@ -35,7 +35,7 @@ def mwclient_login(language):
         p_m = 'p'
 
     site = mwclient.Site(('https', '%s.wiki%sedia.org' % (language, p_m)),
-                         clients_useragent=ua)
+                         clients_useragent=user_agent)
     with open(os.path.join(__dir__, 'api_login.txt'), 'r') as f:
         username = f.readline().strip()
         password = f.readline().strip()
@@ -45,7 +45,7 @@ def mwclient_login(language):
 
 
 # Recursively check categories, avoid looping indefinitely.
-def listpages(this_site, category_name):
+def listpages(this_site, category_name, namespaces=[0, 4, 102]):
     page_list, category_tracker = [], []
     for page in this_site.Categories[category_name]:
         if page.namespace == 14:
@@ -53,9 +53,8 @@ def listpages(this_site, category_name):
                 cat_pages = listpages(this_site,
                                       ':'.join(page.name.split(":")[1:]))
                 page_list.extend(cat_pages)
-            else:
                 category_tracker.append(page.name)
-        if page.namespace in [0, 4, 102]:  # Ignore unimportant namespaces
+        if page.namespace in namespaces:  # Ignore unimportant namespaces
             page_list.append(page.name)
     return page_list
 
