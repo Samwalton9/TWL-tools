@@ -23,7 +23,7 @@ g_client = logins.gspread_login()
 # Test sheet - 17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg
 # Live sheet - 1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik
 # Pageviews sheet
-g_sheet = g_client.open_by_key('17Vr9o9ytiv-5l9g3TdUoheEJldWKFxZrUTiIJQI-Ucg')
+g_sheet = g_client.open_by_key('1hUbMHmjoewO36kkE_LlTsj2JQL9018vEHTeAP7sR5ik')
 global_sums = g_sheet.worksheet('Global Sums')
 
 
@@ -275,7 +275,7 @@ def update_pageviews():
             cell_sum = sum([int(i) for i in pageview_values])
             global_sums.update_cell(g_row, g_col, cell_sum)
 
-    # Code would be more efficient if we reversed the above two for loops
+    # Code could be more efficient if we reversed the above two for loops
     # But outweighed by the extra API calls necessary, so requires us to loop again here
     for jj, g_month in enumerate(g_dates):
         this_col = list(filter(None, global_sums.col_values(jj+5)[4:]))
@@ -285,6 +285,7 @@ def update_pageviews():
                 global_total += int(this_col[ii])
             total += int(this_col[ii])
         fraction = 100*(global_total/float(total))
+        global_sums.update_cell(1, jj+5, this_month['string'])
         global_sums.update_cell(2, jj+5, total)
         global_sums.update_cell(3, jj+5, global_total)
         global_sums.update_cell(4, jj+5, '%.1f%%' % fraction)
