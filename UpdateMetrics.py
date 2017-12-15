@@ -74,7 +74,7 @@ for i, search_term in enumerate(url_list):
      url_pattern = current_protocol + "://" + '.'.join(url_split_reversed) + ".%"
      print(url_pattern)
 
-     this_num_urls = cur.execute('SELECT COUNT(*) FROM page, externallinks WHERE page_id = el_from AND el_index LIKE %s' % url_pattern)
+     this_num_urls = cur.execute("SELECT COUNT(*) FROM page, externallinks WHERE page_id = el_from AND el_index LIKE '%s'" % url_pattern)
     # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
     # this_num_urls = sum([1 for _ in exturls])
     # num_urls += this_num_urls
