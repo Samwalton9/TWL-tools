@@ -1,6 +1,6 @@
 import gspread
 import time
-import oursql
+import toolforge
 import mwclient
 import numpy as np
 import logins
@@ -32,6 +32,7 @@ else:
  previous_data = worksheet.col_values(col_numbers)
 
 ua = 'Wikipedia Library Metrics Updater run by User:Samwalton9'
+toolforge.set_user_agent('twltools')
 
 protocols = ['http', 'https']
 
@@ -51,44 +52,31 @@ for i, search_term in enumerate(url_list):
   if "." in search_term: #Only do this if it will be time efficient and a URL
    if not signed_in or current_site != url_language: #Do blocks of the same language without signing in each time.
     print("New language, reconnecting to DB. (%s => %s)" %(current_site, url_language))
+    conn = toolforge.connect('{}wiki'.format(url_language))
 
-    if search_term[-1] == "/":
-      search_term = search_term[:-1]  # Remove trailing slashes
+   if search_term[-1] == "/":
+     search_term = search_term[:-1]  # Remove trailing slashes
 
-    url_split_dots = search_term.split(".")
-    if "*" in url_split_dots:
-      url_split_dots = url_split_dots[1:]
-    if "/" in url_split_dots:
-      url_split_reversed = url_split_dots[:-1][::-1]
-      url_split_reversed.append(url_split_dots[-1])
-    else:
-      url_split_reversed = url_split_dots[::-1]
+   url_split_dots = search_term.split(".")
+   if "*" in url_split_dots:
+     url_split_dots = url_split_dots[1:]
+   if "/" in url_split_dots:
+     url_split_reversed = url_split_dots[:-1][::-1]
+     url_split_reversed.append(url_split_dots[-1])
+   else:
+     url_split_reversed = url_split_dots[::-1]
 
-    db = oursql.connect(db = '%swiki-p' % url_language,
-                        host = '%swiki-p.rrdb.toolserver.org' % url_language,
-                        read_default_file = os.path.expanduser("~/replica.my.cnf"),
-                        charset=None,
-                        use_unicode=False
-                        )
-    cursor = db.cursor()
-    # site = mwclient.Site(('https', '%s.wikipedia.org' %language_list[i].strip()), clients_useragent=ua)
 
-    # with open('api_login.txt', 'r') as f:
-    #   username = f.readline().strip()
-    #   password = f.readline().strip()
-
-    # site.login(username, password)
-    # signed_in = True
-    # current_site = site.host[1][0:2]
  	 
    print("Collecting...")
    for current_protocol in protocols:
-    url_pattern = current_protocol + "://" + '.'.join(url_split_reversed) + ".%"
+    with conn.cursor() as cur:
+     url_pattern = current_protocol + "://" + '.'.join(url_split_reversed) + ".%"
 
-    this_num_urls = cursor.execute('''SELECT COUNT(*) FROM page, externallinks
-                                      WHERE page_id = el_from
-                                      AND el_index LIKE ?
-                                      ''', url_pattern)
+     this_num_urls = cur.execute('''SELECT COUNT(*) FROM page, externallinks
+                                       WHERE page_id = el_from
+                                       AND el_index LIKE ?
+                                       ''', url_pattern)
     # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
     # this_num_urls = sum([1 for _ in exturls])
     # num_urls += this_num_urls
