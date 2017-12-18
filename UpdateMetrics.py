@@ -32,12 +32,11 @@ else:
  previous_data = worksheet.col_values(col_numbers)
 
 ua = 'Wikipedia Library Metrics Updater run by User:Samwalton9'
-toolforge.set_user_agent('twltools')
 
 protocols = ['http', 'https']
 
 number_of_urls = [date_string] #Date for top of column
-signed_in = False
+connected = False
 current_site = None
 
 #Need to allow new URLs to be collected.
@@ -50,10 +49,11 @@ for i, search_term in enumerate(url_list):
  if not same_day or (same_day == True and last_data[i+1]) == '': #Ignore any existing data for today
 
   if "." in search_term: #Only do this for URLs
-   if not signed_in or current_site != url_language: #Do blocks of the same language without signing in each time.
+   if not connected or current_site != url_language: #Do blocks of the same language without signing in each time.
     print("New language, reconnecting to DB. (%s => %s)" %(current_site, url_language))
     conn = toolforge.connect('{}wiki'.format(url_language))
     current_site = url_language
+    connected = True
 
    if search_term[0] == "*":
     search_term = search_term[2:]  # Remove *.
@@ -73,10 +73,11 @@ for i, search_term in enumerate(url_list):
      url_pattern = current_protocol + "://" + url_optimised
      print(url_pattern)
 
-     this_num_urls = cur.execute('''SELECT COUNT(*) FROM page, externallinks
-                                    WHERE page_id = el_from
-                                    AND el_index LIKE '%s'
-                                    ''' % url_pattern)
+     cur.execute('''SELECT COUNT(*) FROM page, externallinks
+                    WHERE page_id = el_from
+                    AND el_index LIKE '%s'
+                    ''' % url_pattern)
+     cur.fetchone()
     # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
     # this_num_urls = sum([1 for _ in exturls])
     # num_urls += this_num_urls
