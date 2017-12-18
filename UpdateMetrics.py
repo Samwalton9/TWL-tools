@@ -77,11 +77,11 @@ for i, search_term in enumerate(url_list):
                     WHERE page_id = el_from
                     AND el_index LIKE '%s'
                     ''' % url_pattern)
-     this_num_urls = cur.fetchone()
+     this_num_urls = cur.fetchone()[0]
     # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
     # this_num_urls = sum([1 for _ in exturls])
-    # num_urls += this_num_urls
-    print(current_protocol, this_num_urls)
+    num_urls += this_num_urls
+    print(this_num_urls)
 
   else:
    # Do a mwclient search for text (or DB?)
