@@ -60,7 +60,7 @@ for i, search_term in enumerate(url_list):
 
    url_start = search_term.split("/")[0].split(".")[::-1]
 
-   url_optimised = '.'.join(url_start) + ".%"
+   url_optimised = '.'.join(url_start) + "%"
 
    if "/" in search_term:
     url_end = search_term.split("/")[1:]
