@@ -1,0 +1,74 @@
+<!doctype html>
+<head>
+  <script src="{{ url_for('static', filename='Chart.min.js')}}"></script>
+</head>
+<title>TWL Tools - Metrics</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>TWL Tools/Metrics</h1>
+  <div class="back-button">
+    <a href="{{ url_for('index') }}">Back</a>
+  </div>
+  <h2>{{ current_partner }} link metrics</h2>
+
+  {% for url_metrics in metrics_data %}
+
+    {{ url_metrics['URL name'] }} - {{ url_metrics['Language'] }} Wikipedia<br/>
+    {{ url_metrics['Domain'] }}
+    <br/>
+    <canvas id="{{ url_metrics['Chart name'] }}" width="600" height="400"></canvas>
+    <script>
+      var chartData = {
+      labels : [{% for item in url_metrics['Link dates'] %}
+                  "{{item}}",
+                {% endfor %}],
+      datasets : [
+        {
+          fillColor: "rgba(151,187,205,0.2)",
+          strokeColor: "rgba(151,187,205,1)",
+          pointColor: "rgba(151,187,205,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(151,187,205,1)",
+          bezierCurve : false,
+          data : [{% for item in url_metrics['Link numbers'] %}
+                    {{item}},
+                  {% endfor %}]
+        }]
+      }
+
+      Chart.defaults.global.animationSteps = 50;
+      Chart.defaults.global.tooltipYPadding = 16;
+      Chart.defaults.global.tooltipCornerRadius = 0;
+      Chart.defaults.global.tooltipTitleFontStyle = "normal";
+      Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+      Chart.defaults.global.animationEasing = "easeOutBounce";
+      Chart.defaults.global.responsive = false;
+      Chart.defaults.global.scaleLineColor = "black";
+      Chart.defaults.global.scaleFontSize = 16;
+
+     // get chart canvas
+     var mychart = document.getElementById("{{ url_metrics['Chart name'] }}").getContext("2d");
+   
+     steps = 10
+     max = {{ url_metrics['chart_height'] }}
+     min = {{ url_metrics['chart_start'] }}
+     max_min = max - min
+     // draw chart
+     var LineChartDemo = new Chart(mychart).Line(chartData, {
+          scaleOverride: true,
+          scaleSteps: steps,
+          scaleStepWidth: Math.ceil(max_min / steps),
+          scaleStartValue: min,
+          scaleShowVerticalLines: true,
+          scaleShowGridLines : true,
+          barShowStroke : true,
+          scaleShowLabels: true,
+          bezierCurve: false,
+   
+     });
+    </script>
+    <br/>
+
+  {% endfor %}
+</div>

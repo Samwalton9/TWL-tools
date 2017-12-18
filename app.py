@@ -30,6 +30,7 @@ import os
 from fnmatch import fnmatch
 import proxy
 import update_pageviews
+import metrics
 
 app = flask.Flask(__name__)
 app.config.from_object(__name__)
@@ -130,6 +131,13 @@ def individual_log(log_file):
 
     return flask.render_template('pageviews.html', results=results, type='log')
 
+
+@app.route('/metrics/<partner_name>')
+def partner_metrics(partner_name):
+   if metrics.partner_check(partner_name):
+    partner_metrics = metrics.list_urls(partner_name)
+    return flask.render_template('metrics_partner.html',
+        current_partner= partner_name, metrics_data= partner_metrics)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
