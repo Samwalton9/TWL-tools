@@ -39,8 +39,6 @@ number_of_urls = [date_string] #Date for top of column
 connected = False
 current_site = None
 
-#Need to allow new URLs to be collected.
-
 for i, search_term in enumerate(url_list):
  num_urls = 0
  url_language = language_list[i].strip()
@@ -49,7 +47,7 @@ for i, search_term in enumerate(url_list):
  if not same_day or (same_day == True and last_data[i+1]) == '': #Ignore any existing data for today
 
   if "." in search_term: #Only do this for URLs
-   if not connected or current_site != url_language: #Do blocks of the same language without signing in each time.
+   if not connected or current_site != url_language: #Do blocks of the same language without making new database connections.
     print("New language, reconnecting to DB. (%s => %s)" %(current_site, url_language))
     conn = toolforge.connect('{}wiki'.format(url_language))
     current_site = url_language
@@ -59,12 +57,10 @@ for i, search_term in enumerate(url_list):
     search_term = search_term[2:]  # Remove *.
 
    url_start = search_term.split("/")[0].split(".")[::-1]
-
    url_optimised = '.'.join(url_start) + "%"
 
    if "/" in search_term:
     url_end = search_term.split("/")[1:]
-
     url_optimised += "/" + '/'.join(url_end) + "%"
  	 
    print("Collecting...")
@@ -78,19 +74,17 @@ for i, search_term in enumerate(url_list):
                     AND el_index LIKE '%s'
                     ''' % url_pattern)
      this_num_urls = cur.fetchone()[0]
-    # exturls = site.exturlusage(search_term.strip(), protocol=current_protocol)
-    # this_num_urls = sum([1 for _ in exturls])
+
     num_urls += this_num_urls
     print(this_num_urls)
 
   else:
-   # Do a mwclient search for text (or DB?)
+   # TODO: Do a mwclient search for text queries - DB doesn't contain full text
    # print "Too many links."
    num_urls = ""
 
   number_of_urls.append(num_urls)
   
-  print(num_urls)
  else:
   number_of_urls.append(last_data[i+1])
   print('Already recorded.')
