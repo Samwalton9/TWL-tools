@@ -6,7 +6,7 @@ import numpy as np
 import logins
 
 g_client = logins.gspread_login()
-g_sheet = g_client.open_by_key('1sVYW4mOAniTq6XKDPSsH-UMrTRzvhPyE7mLQHuzNIi8') #Test sheet
+g_sheet = g_client.open_by_key('1KVuv4BBnmGE_N5a4h0Db55cttwkuCqKD653D7XAYH4I') #Test sheet
 #g_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM') #Live sheet
 worksheet = g_sheet.get_worksheet(0)
 
@@ -54,24 +54,22 @@ for i, search_term in enumerate(url_list):
     print("New language, reconnecting to DB. (%s => %s)" %(current_site, url_language))
     conn = toolforge.connect('{}wiki'.format(url_language))
 
-   if search_term[-1] == "/":
-     search_term = search_term[:-1]  # Remove trailing slashes
+    if search_term[0] == "*":
+     search_term = search_term[2:]  # Remove *.
 
-   url_split_dots = search_term.split(".")
-   if "*" in url_split_dots:
-     url_split_dots = url_split_dots[1:]
-   if "/" in url_split_dots:
-     url_split_reversed = url_split_dots[:-1][::-1]
-     url_split_reversed.append(url_split_dots[-1])
-   else:
-     url_split_reversed = url_split_dots[::-1]
+    url_start = search_term.split("/")[0].split(".")[::-1]
 
+    url_optimised = '.'.join(url_start) + ".%"
 
+    if "/" in search_term:
+     url_end = search_term.split("/")[1:]
+
+     url_optimised += "/" + '/'.join(url_end) + "%"
  	 
    print("Collecting...")
    for current_protocol in protocols:
     with conn.cursor() as cur:
-     url_pattern = current_protocol + "://" + '.'.join(url_split_reversed) + ".%"
+     url_pattern = current_protocol + "://" + url_optimised
      print(url_pattern)
 
      this_num_urls = cur.execute("SELECT COUNT(*) FROM page, externallinks WHERE page_id = el_from AND el_index LIKE '%s'" % url_pattern)
