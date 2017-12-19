@@ -36,7 +36,7 @@ def mwclient_login(language, user_agent=ua):
 
     site = mwclient.Site(('https', '%s.wiki%sedia.org' % (language, p_m)),
                          clients_useragent=user_agent)
-    with open(os.path.join(__dir__, 'api_login.txt'), 'r') as f:
+    with open(os.path.join(__dir__, 'config/api_login.txt'), 'r') as f:
         username = f.readline().strip()
         password = f.readline().strip()
         site.login(username, password)
