@@ -38,7 +38,7 @@ class CollectMetrics:
 		selected_urls = []
 		for i, URL_domain in enumerate(self.URL_domains):
 			if self.partner_names[i] == self.partner_name and self.display_check[i] == 'x':
-				this_partner_metrics = self.all_values[i][7:]
+				this_partner_metrics = self.all_values[i+1][7:]
 				this_partner_dates = [self.metrics_dates[i]
 									  for i, x in enumerate(this_partner_metrics)
 									  if x != '']
