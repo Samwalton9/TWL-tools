@@ -2,6 +2,7 @@ import datetime
 import gspread
 import logins
 import pycountry
+import re
 
 def get_column(worksheet, col_num):
 	return list(filter(None,worksheet.col_values(col_num)[1:]))
@@ -27,13 +28,6 @@ class CollectMetrics:
 		self.metrics_dates = first_worksheet.row_values(1)[7:]
 		self.all_values = first_worksheet.get_all_values()
 
-	def partner_check(self):
-		urls_to_show = self.list_urls()
-		if len(urls_to_show) > 0:
-			return True
-		else:
-			return
-
 	def list_urls(self):
 		selected_urls = []
 		for i, URL_domain in enumerate(self.URL_domains):
@@ -43,7 +37,10 @@ class CollectMetrics:
 									  for i, x in enumerate(this_partner_metrics)
 									  if x != '']
 				this_partner_metrics = [int(i.replace(",","")) for i in list(filter(None,this_partner_metrics))]
-				
+				print(URL_domain)
+				print(this_partner_metrics)
+				print(this_partner_dates)
+
 				if max(this_partner_metrics) < 100:
 					chart_start = 0
 				else:
@@ -58,8 +55,10 @@ class CollectMetrics:
 									  'Link dates': this_partner_dates,
 									  'chart_height': chart_height,
 									  'chart_start': chart_start,
-									  'Chart name': self.URL_names[i].replace(" ","")
+									  'Chart name': re.sub('\W+','',self.URL_names[i])
 									 })
-
-		return selected_urls
+		if len(selected_urls) > 0:
+			return selected_urls
+		else:
+			return
 

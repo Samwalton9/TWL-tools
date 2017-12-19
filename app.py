@@ -135,8 +135,8 @@ def individual_log(log_file):
 @app.route('/metrics/<partner_name>')
 def partner_metrics(partner_name):
     pub_metrics = metrics.CollectMetrics(partner_name)
-    if pub_metrics.partner_check():
-        partner_metrics = pub_metrics.list_urls()
+    partner_metrics = pub_metrics.list_urls()
+    if partner_metrics:
         return flask.render_template('metrics_partner.html',
             current_partner= partner_name, metrics_data= partner_metrics)
 

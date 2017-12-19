@@ -13,10 +13,10 @@
 
   {% for url_metrics in metrics_data %}
 
-    {{ url_metrics['URL name'] }} - {{ url_metrics['Language'] }} Wikipedia<br/>
-    {{ url_metrics['Domain'] }}
+    <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
+    <div class ="url-text">{{ url_metrics['Domain'] }}</div>
     <br/>
-    <canvas id="{{ url_metrics['Chart name'] }}" width="600" height="400"></canvas>
+    <canvas id="{{ url_metrics['Chart name'] }}">HTML Canvas not supported.</canvas>
     <script>
       var chartData = {
       labels : [{% for item in url_metrics['Link dates'] %}
@@ -64,7 +64,7 @@
           scaleShowGridLines : true,
           barShowStroke : true,
           scaleShowLabels: true,
-          bezierCurve: false,
+          bezierCurve: false
    
      });
     </script>
