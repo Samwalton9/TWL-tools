@@ -37,9 +37,6 @@ class CollectMetrics:
 									  for i, x in enumerate(this_partner_metrics)
 									  if x != '']
 				this_partner_metrics = [int(i.replace(",","")) for i in list(filter(None,this_partner_metrics))]
-				print(URL_domain)
-				print(this_partner_metrics)
-				print(this_partner_dates)
 
 				if max(this_partner_metrics) < 100:
 					chart_start = 0
