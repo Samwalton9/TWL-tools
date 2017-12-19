@@ -51,8 +51,7 @@ class CollectMetrics:
 									  'Link numbers': this_partner_metrics,
 									  'Link dates': this_partner_dates,
 									  'chart_height': chart_height,
-									  'chart_start': chart_start,
-									  'Chart name': re.sub('\W+','',self.URL_names[i])
+									  'chart_start': chart_start
 									 })
 		if len(selected_urls) > 0:
 			return selected_urls

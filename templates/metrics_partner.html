@@ -16,7 +16,7 @@
     <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
     <div class ="url-text">{{ url_metrics['Domain'] }}</div>
     <br/>
-    <canvas id="{{ url_metrics['Chart name'] }}">HTML Canvas not supported.</canvas>
+    <canvas id="{{ loop.index }}">HTML Canvas not supported.</canvas>
     <script>
       var chartData = {
       labels : [{% for item in url_metrics['Link dates'] %}
@@ -48,7 +48,7 @@
       Chart.defaults.global.scaleFontSize = 16;
 
      // get chart canvas
-     var mychart = document.getElementById("{{ url_metrics['Chart name'] }}").getContext("2d");
+     var mychart = document.getElementById("{{ loop.index }}").getContext("2d");
    
      steps = 10
      max = {{ url_metrics['chart_height'] }}
