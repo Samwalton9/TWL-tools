@@ -1,13 +1,11 @@
-import gspread
 import time
 import toolforge
 import mwclient
-import numpy as np
 import logins
 
 g_client = logins.gspread_login()
-g_sheet = g_client.open_by_key('1KVuv4BBnmGE_N5a4h0Db55cttwkuCqKD653D7XAYH4I') #Test sheet
-#g_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM') #Live sheet
+#g_sheet = g_client.open_by_key('1KVuv4BBnmGE_N5a4h0Db55cttwkuCqKD653D7XAYH4I') #Test sheet
+g_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM') #Live sheet
 worksheet = g_sheet.get_worksheet(0)
 
 col_numbers = worksheet.col_count
@@ -30,8 +28,6 @@ if same_day:
  last_data = worksheet.col_values(col_numbers)
 else:
  previous_data = worksheet.col_values(col_numbers)
-
-ua = 'Wikipedia Library Metrics Updater run by User:Samwalton9'
 
 protocols = ['http', 'https']
 
