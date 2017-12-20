@@ -1,14 +1,14 @@
 <!doctype html>
 <head>
-  <script src="{{ url_for('static', filename='Chart.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/Chart.min.js')}}"></script>
 </head>
 <title>TWL Tools - Metrics</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
+<link rel=stylesheet href="{{ url_for('static', filename='style.css') }}">
 <div class=page>
   <h1>TWL Tools/Metrics</h1>
-  <div class="back-button">
-    <a href="{{ url_for('index') }}">Back</a>
-  </div>
+  <a href="{{ url_for('index') }}" class="btn btn-info">Back</a>
+  <a href="{{ url_for('metrics_info') }}" class="btn btn-info pull-right">Information</a>
   <h2>{{ current_partner }} link metrics</h2>
 
   {% for url_metrics in metrics_data %}

@@ -140,6 +140,11 @@ def partner_metrics(partner_name):
         return flask.render_template('metrics_partner.html',
             current_partner= partner_name, metrics_data= partner_metrics)
 
+
+@app.route('/metrics_info')
+def metrics_info():
+    return flask.render_template('metrics_info.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
