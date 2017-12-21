@@ -1,6 +1,7 @@
 <!doctype html>
 <head>
-  <script src="{{ url_for('static', filename='js/Chart.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/moment.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/Chart.js')}}"></script>
 </head>
 <title>TWL Tools - Metrics</title>
 <link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
@@ -16,34 +17,31 @@
     <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
     <div class ="url-text">{{ url_metrics['Domain'] }}</div>
     <br/>
-    <canvas id="{{ loop.index }}">HTML Canvas not supported.</canvas>
+    <div class="chart-container">
+      <canvas id="{{ loop.index }}">HTML Canvas not supported.</canvas>
+    </div>
     <script>
       var chartData = {
-      labels : [{% for item in url_metrics['Link dates'] %}
-                  "{{item}}",
-                {% endfor %}],
-      datasets : [
+      labels: [{% for item in url_metrics['Link dates'] %}
+                  new Date("{{item}}"),
+               {% endfor %}],
+      datasets: [
         {
-          fillColor: "rgba(151,187,205,0.2)",
-          strokeColor: "rgba(151,187,205,1)",
-          pointColor: "rgba(151,187,205,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(151,187,205,1)",
-          bezierCurve : false,
-          data : [{% for item in url_metrics['Link numbers'] %}
+          data: [{% for item in url_metrics['Link numbers'] %}
                     {{item}},
-                  {% endfor %}]
+                 {% endfor %}],
+          backgroundColor: 'rgba(118, 186, 242, 0.3)'
         }]
       }
 
-      Chart.defaults.global.animationSteps = 50;
+      Chart.defaults.global.legend.display = false;
+      Chart.defaults.global.animationSteps = 60;
       Chart.defaults.global.tooltipYPadding = 16;
       Chart.defaults.global.tooltipCornerRadius = 0;
       Chart.defaults.global.tooltipTitleFontStyle = "normal";
       Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
-      Chart.defaults.global.animationEasing = "easeOutBounce";
-      Chart.defaults.global.responsive = false;
+      Chart.defaults.global.animationEasing = "linear";
+      Chart.defaults.global.responsive = true;
       Chart.defaults.global.scaleLineColor = "black";
       Chart.defaults.global.scaleFontSize = 16;
 
@@ -51,20 +49,37 @@
      var mychart = document.getElementById("{{ loop.index }}").getContext("2d");
    
      steps = 10
-     max = {{ url_metrics['chart_height'] }}
-     min = {{ url_metrics['chart_start'] }}
-     max_min = max - min
+     data_max = {{ url_metrics['chart_height'] }}
+     data_min = {{ url_metrics['chart_start'] }}
+
+     var chartOptions = {
+      scales: {
+        xAxes: [{
+          type: 'time',
+          distribution: 'linear',
+          time: {
+            unit: 'month',
+            tooltipFormat: "MMM DD YYYY",
+            displayFormats: {
+              month: 'MMM YYYY'
+            }
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            max: data_max,
+            min: data_min
+          }
+        }]
+      }
+     }
+
      // draw chart
-     var LineChartDemo = new Chart(mychart).Line(chartData, {
-          scaleOverride: true,
-          scaleSteps: steps,
-          scaleStepWidth: Math.ceil(max_min / steps),
-          scaleStartValue: min,
-          scaleShowVerticalLines: true,
-          scaleShowGridLines : true,
-          barShowStroke : true,
-          scaleShowLabels: true,
-          bezierCurve: false
+     var LineChart = new Chart(mychart, {
+          type: 'line',
+          data: chartData,
+          bezierCurve: false,
+          options: chartOptions
    
      });
     </script>

@@ -45,13 +45,15 @@ class CollectMetrics:
 
 				chart_height = max(this_partner_metrics) + (min(this_partner_metrics) * 0.1)
 
+				dates_iso = ["%s-%s-%s" %(date.split("/")[2], date.split("/")[0], date.split("/")[1]) for date in this_partner_dates]
+
 				selected_urls.append({'URL name': self.URL_names[i],
 									  'Language': self.language_list[i].name,
 									  'Domain': URL_domain,
 									  'Link numbers': this_partner_metrics,
-									  'Link dates': this_partner_dates,
-									  'chart_height': chart_height,
-									  'chart_start': chart_start
+									  'Link dates': dates_iso,
+									  'chart_height': round(chart_height,-1),
+									  'chart_start': round(chart_start,-1)
 									 })
 		if len(selected_urls) > 0:
 			return selected_urls
