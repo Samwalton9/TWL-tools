@@ -11,8 +11,8 @@ worksheet = g_sheet.get_worksheet(0)
 col_numbers = worksheet.col_count
 
 partner_name_list = list(filter(None,worksheet.col_values(1)[1:])) #[1:] for all
-url_list = list(filter(None,worksheet.col_values(2)[1:])) #Avoid header, ignore empties
-language_list = list(filter(None, worksheet.col_values(3)[1:]))
+url_list = list(filter(None,worksheet.col_values(3)[1:])) #Avoid header, ignore empties
+language_list = list(filter(None, worksheet.col_values(5)[1:]))
 
 last_col_date = worksheet.col_values(col_numbers)[0]
 
