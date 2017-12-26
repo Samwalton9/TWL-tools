@@ -1,0 +1,21 @@
+<!doctype html>
+<head>
+  <script src="{{ url_for('static', filename='js/moment.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/Chart.js')}}"></script>
+</head>
+<title>TWL Tools - Metrics</title>
+<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
+<link rel=stylesheet href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>TWL Tools/Metrics</h1>
+  <a href="{{ url_for('index') }}" class="btn btn-info">Back</a>
+  <a href="{{ url_for('metrics_info') }}" class="btn btn-info pull-right">Information</a>
+  <br/>
+
+  <div class="metrics-partners">
+	  {% for partner in partners %}
+	  	<a href="{{ url_for('partner_metrics', partner_name= partner) }}" class="btn btn-default"> {{ partner }}</a><br/>
+	  {% endfor %}
+  </div>
+
+</div>

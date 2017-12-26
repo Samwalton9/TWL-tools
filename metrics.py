@@ -9,7 +9,7 @@ def get_column(worksheet, col_num):
 
 class CollectMetrics:
 
-	def __init__(self, partner_name):
+	def __init__(self, partner_name= None):
 		self.partner_name = partner_name
 		g_client = logins.gspread_login()
 		metrics_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM')
@@ -27,6 +27,10 @@ class CollectMetrics:
 
 		self.metrics_dates = first_worksheet.row_values(1)[7:]
 		self.all_values = first_worksheet.get_all_values()
+
+	def list_partners(self):
+		partner_list = [x for i,x in enumerate(self.partner_names) if self.display_check[i] == 'x']
+		return sorted(set(partner_list))
 
 	def list_urls(self):
 		selected_urls = []

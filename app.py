@@ -132,6 +132,12 @@ def individual_log(log_file):
     return flask.render_template('pageviews.html', results=results, type='log')
 
 
+@app.route('/metrics')
+def metrics_index():
+    partner_list = metrics.CollectMetrics().list_partners()
+    return flask.render_template('metrics.html', partners= partner_list)
+
+
 @app.route('/metrics/<partner_name>')
 def partner_metrics(partner_name):
     pub_metrics = metrics.CollectMetrics(partner_name)
