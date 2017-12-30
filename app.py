@@ -151,6 +151,29 @@ def partner_metrics(partner_name):
 def metrics_info():
     return flask.render_template('metrics_info.html')
 
+
+def open_log(file_name):
+    try:
+        with open('logs/{}.txt'.format(file_name)) as f:
+            log_text = f.readline()
+        return log_text
+    except FileNotFoundError:
+        return
+
+
+@app.route('/scheduled_tasks')
+@flask_login.login_required
+def scheduled_tasks():
+    metrics_text = open_log('metrics_run')
+    pageviews_text = open_log('pageviews_run')
+
+    log_text = {
+        'metrics': metrics_text,
+        'pageviews': pageviews_text
+    }
+    return flask.render_template('scheduled_tasks.html', automation_text= log_text)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 

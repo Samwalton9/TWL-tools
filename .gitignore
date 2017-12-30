@@ -9,4 +9,7 @@ twltools.egg-info/
 *.sh
 # Data files
 periodicals_data
+# Logs
 *pageviews_log.txt
+metrics_run.txt
+pageviews_run.txt

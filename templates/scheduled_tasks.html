@@ -1,0 +1,15 @@
+<!doctype html>
+<title>TWL Tools - Metrics</title>
+<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
+<link rel=stylesheet href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>TWL Tools/Scheduled tasks</h1>
+  <a href="{{ url_for('index') }}" class="btn btn-info">Back</a>
+  <br/>
+
+  <div class="scheduled-tasks">
+    {{ automation_text['metrics'] if automation_text['metrics'] }}
+    {{ automation_text['pageviews'] if automation_text['pageviews'] }}
+  </div>
+
+</div>
