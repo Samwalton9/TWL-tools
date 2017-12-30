@@ -116,7 +116,8 @@ def pageviews():
     if len(logs_list) > 0:
         simple_list = sorted(["_".join(i.split("_")[:3])
                              for i in logs_list
-                             if 'latest' not in i])
+                             if 'latest' not in i
+                             and "_run" not in i])
         simple_list.insert(0, 'latest')
     else:
         simple_list = None
