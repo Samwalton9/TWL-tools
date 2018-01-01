@@ -42,12 +42,15 @@ class CollectMetrics:
 									  if x != '']
 				this_partner_metrics = [int(i.replace(",","")) for i in list(filter(None,this_partner_metrics))]
 
-				if max(this_partner_metrics) < 100:
+				max_links = max(this_partner_metrics)
+				min_links = min(this_partner_metrics)
+
+				if max_links < 100:
 					chart_start = 0
 				else:
-					chart_start = min(this_partner_metrics) * 0.9
+					chart_start = min_links * 0.9
 
-				chart_height = max(this_partner_metrics) + (min(this_partner_metrics) * 0.1)
+				chart_height = max_links + ((max_links - min_links) * 0.1)
 
 				dates_iso = ["%s-%s-%s" %(date.split("/")[2], date.split("/")[0], date.split("/")[1]) for date in this_partner_dates]
 
