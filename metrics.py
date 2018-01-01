@@ -50,7 +50,10 @@ class CollectMetrics:
 				else:
 					chart_start = min_links * 0.9
 
-				chart_height = max_links + ((max_links - min_links) * 0.1)
+				if max_links > 10:
+					chart_height = round(max_links + ((max_links - min_links) * 0.1),-1)
+				else:
+					chart_height = 15
 
 				dates_iso = ["%s-%s-%s" %(date.split("/")[2], date.split("/")[0], date.split("/")[1]) for date in this_partner_dates]
 
@@ -59,7 +62,7 @@ class CollectMetrics:
 									  'Domain': URL_domain,
 									  'Link numbers': this_partner_metrics,
 									  'Link dates': dates_iso,
-									  'chart_height': round(chart_height,-1),
+									  'chart_height': chart_height,
 									  'chart_start': round(chart_start,-1)
 									 })
 		if len(selected_urls) > 0:
