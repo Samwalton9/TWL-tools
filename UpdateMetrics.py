@@ -49,26 +49,29 @@ for i, search_term in enumerate(url_list):
     current_site = url_language
     connected = True
 
+   search_term = search_term.strip()  # Catch any trailing spaces
    if search_term[0] == "*":
-    search_term = search_term[2:]  # Remove *.
+    search_term = search_term[2:]
 
    url_start = search_term.split("/")[0].split(".")[::-1]
-   url_optimised = '.'.join(url_start) + "%"
+   url_optimised = '.'.join(url_start) + ".%"
 
    if "/" in search_term:
-    url_end = search_term.split("/")[1:]
-    url_optimised += "/" + '/'.join(url_end) + "%"
- 	 
+    url_end = "/".join(search_term.split("/")[1:])
+    url_pattern_end = "%./" + url_end + "%"
+   else:
+    url_pattern_end = '%'
+   
    print("Collecting...")
    for current_protocol in protocols:
     with conn.cursor() as cur:
-     url_pattern = current_protocol + "://" + url_optimised
-     print(url_pattern)
+     url_pattern_start = current_protocol + "://" + url_optimised
+     print(url_pattern_start, url_pattern_end)
 
-     cur.execute('''SELECT COUNT(*) FROM page, externallinks
-                    WHERE page_id = el_from
+     cur.execute('''SELECT COUNT(*) FROM externallinks
+                    WHERE el_index LIKE '%s'
                     AND el_index LIKE '%s'
-                    ''' % url_pattern)
+                    ''' % (url_pattern_start, url_pattern_end))
      this_num_urls = cur.fetchone()[0]
 
     num_urls += this_num_urls
