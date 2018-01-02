@@ -55,7 +55,7 @@ for i, search_term in enumerate(url_list):
     url_pattern_end = '%'
    
    print("Collecting...")
-   print(url_pattern_start, url_pattern_end)
+   print(url_optimised, url_pattern_end)
 
    for site in sites:
     conn = toolforge.connect('{}wiki'.format(site))
