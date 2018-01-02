@@ -6,7 +6,7 @@ import logins
 g_client = logins.gspread_login()
 #g_sheet = g_client.open_by_key('1KVuv4BBnmGE_N5a4h0Db55cttwkuCqKD653D7XAYH4I') #Test sheet
 g_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM') #Live sheet
-worksheet = g_sheet.get_worksheet(2) # Global numbers
+worksheet = g_sheet.get_worksheet(1) # Global numbers
 
 col_numbers = worksheet.col_count
 
@@ -32,7 +32,7 @@ protocols = ['http', 'https']
 
 number_of_urls = [date_string] #Date for top of column
 
-sites = ['en', 'ja', 'es', 'it', 'pt', 'ru', 'de', 'fr', 'zh', 'pl']
+sites = ['de', 'en', 'es', 'fr', 'it', 'nl', 'ja', 'pl', 'ru', 'ceb', 'sv', 'vi', 'war']
 
 for i, search_term in enumerate(url_list):
  num_urls = 0
@@ -53,15 +53,16 @@ for i, search_term in enumerate(url_list):
     url_pattern_end = "%./" + url_end + "%"
    else:
     url_pattern_end = '%'
+   
+   print("Collecting...")
+   print(url_pattern_start, url_pattern_end)
 
    for site in sites:
     conn = toolforge.connect('{}wiki'.format(site))
     
-    print("Collecting...")
     for current_protocol in protocols:
      with conn.cursor() as cur:
       url_pattern_start = current_protocol + "://" + url_optimised
-      print(url_pattern_start, url_pattern_end)
 
       cur.execute('''SELECT COUNT(*) FROM externallinks
                      WHERE el_index LIKE '%s'
