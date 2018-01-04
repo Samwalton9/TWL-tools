@@ -31,6 +31,7 @@ from fnmatch import fnmatch
 import proxy
 import update_pageviews
 import metrics
+import download_metrics
 
 app = flask.Flask(__name__)
 app.config.from_object(__name__)
@@ -133,8 +134,12 @@ def individual_log(log_file):
     return flask.render_template('pageviews.html', results=results, type='log')
 
 
-@app.route('/metrics')
+@app.route('/metrics', methods=['GET', 'POST'])
 def metrics_index():
+    if flask.request.method == 'POST':
+        download_metrics.download_csv()
+        flask.flash('Metrics redownloaded successfully')
+
     partner_list = metrics.CollectMetrics().list_partners()
     return flask.render_template('metrics.html', partners= partner_list)
 

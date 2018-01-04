@@ -1,32 +1,24 @@
 import datetime
-import gspread
-import logins
 import pycountry
-import re
-
-def get_column(worksheet, col_num):
-	return list(filter(None,worksheet.col_values(col_num)[1:]))
+import pandas as pd
 
 class CollectMetrics:
 
 	def __init__(self, partner_name= None):
 		self.partner_name = partner_name
-		g_client = logins.gspread_login()
-		metrics_sheet = g_client.open_by_key('1W7LRnkBrppOx_Yhoa8r0XBMDowGCjmmaHEol7Cj1TvM')
-		first_worksheet = metrics_sheet.get_worksheet(0)
+		self.metrics_data = pd.read_csv('metrics.csv')
 
-
-		self.partner_names = get_column(first_worksheet, 1)
+		partner_data = self.metrics_data['Partner']
+		self.partner_names = partner_data[pd.notna(partner_data)].tolist()
 		num_partners = len(self.partner_names)
-		self.URL_names = get_column(first_worksheet, 2)
-		self.URL_domains = get_column(first_worksheet, 3)
-		self.display_check = first_worksheet.col_values(4)[1:num_partners+1]
+		self.URL_names = self.metrics_data['URL'].tolist()
+		self.URL_domains = self.metrics_data['Domain'].tolist()
+		self.display_check = self.metrics_data['Display?'].tolist()[0:num_partners+1]
 
-		languages = get_column(first_worksheet, 5)
+		languages = self.metrics_data['Language'].tolist()
 		self.language_list = [pycountry.languages.get(alpha_2=i) for i in languages]
 
-		self.metrics_dates = first_worksheet.row_values(1)[7:]
-		self.all_values = first_worksheet.get_all_values()
+		self.metrics_dates = self.metrics_data.columns.tolist()[6:]
 
 	def list_partners(self):
 		partner_list = [x for i,x in enumerate(self.partner_names) if self.display_check[i] == 'x']
@@ -36,11 +28,11 @@ class CollectMetrics:
 		selected_urls = []
 		for i, URL_domain in enumerate(self.URL_domains):
 			if self.partner_names[i] == self.partner_name and self.display_check[i] == 'x':
-				this_partner_metrics = self.all_values[i+1][7:]
+				this_partner_metrics = self.metrics_data.iloc[i,6:].tolist()
 				this_partner_dates = [self.metrics_dates[i]
 									  for i, x in enumerate(this_partner_metrics)
-									  if x != '']
-				this_partner_metrics = [int(i.replace(",","")) for i in list(filter(None,this_partner_metrics))]
+									  if pd.notna(x)]
+				this_partner_metrics = [int(float(str(i).replace(",",""))) for i in this_partner_metrics if pd.notna(i)]
 
 				if "," in URL_domain:
 					domain_split = URL_domain.split(",")
@@ -56,7 +48,7 @@ class CollectMetrics:
 				else:
 					chart_start = min_links * 0.9
 
-				if max_links > 10:
+				if max_links > 15:
 					chart_height = round(max_links + ((max_links - min_links) * 0.1),-1)
 				else:
 					chart_height = 15
@@ -75,4 +67,3 @@ class CollectMetrics:
 			return selected_urls
 		else:
 			return
-
