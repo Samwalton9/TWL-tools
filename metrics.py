@@ -1,12 +1,16 @@
 import datetime
 import pycountry
 import pandas as pd
+import download_metrics
 
 class CollectMetrics:
 
 	def __init__(self, partner_name= None):
 		self.partner_name = partner_name
-		self.metrics_data = pd.read_csv('metrics.csv')
+		try:
+			self.metrics_data = pd.read_csv('metrics.csv')
+		except FileNotFoundError:
+			download_metrics.download_csv()
 
 		partner_data = self.metrics_data['Partner']
 		self.partner_names = partner_data[pd.notna(partner_data)].tolist()

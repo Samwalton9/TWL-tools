@@ -9,3 +9,4 @@ numpy
 oauth2client
 mwclient
 mwviews
+pandas
