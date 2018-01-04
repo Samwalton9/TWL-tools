@@ -42,7 +42,7 @@ class CollectMetrics:
 									  if x != '']
 				this_partner_metrics = [int(i.replace(",","")) for i in list(filter(None,this_partner_metrics))]
 
-				if len(domain_split) > 1:
+				if "," in URL_domain:
 					domain_split = URL_domain.split(",")
 					domain_string = "{} and {}".format(domain_split[0],domain_split[1])
 				else:
