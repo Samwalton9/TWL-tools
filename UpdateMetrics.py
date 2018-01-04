@@ -43,6 +43,12 @@ for i, search_term in enumerate(url_list):
  if not same_day or (same_day == True and last_data[i+1]) == '': #Ignore any existing data for today
 
   if "." in search_term: #Only do this for URLs
+   if not connected or current_site != url_language: #Do blocks of the same language without making new database connections.
+    print("New language, reconnecting to DB. (%s => %s)" %(current_site, url_language))
+    conn = toolforge.connect('{}wiki'.format(url_language))
+    current_site = url_language
+    connected = True
+
    search_terms_split = search_term.split(",")
    for sub_url in search_terms_split:
     sub_url = sub_url.strip()  # Catch any trailing spaces
@@ -57,25 +63,21 @@ for i, search_term in enumerate(url_list):
      url_pattern_end = "%./" + url_end + "%"
     else:
      url_pattern_end = '%'
-    
-    print("Collecting...")
-    print(url_optimised, url_pattern_end)
+   
+   print("Collecting...")
+   for current_protocol in protocols:
+    with conn.cursor() as cur:
+     url_pattern_start = current_protocol + "://" + url_optimised
+     print(url_pattern_start, url_pattern_end)
 
-    for site in sites:
-     conn = toolforge.connect('{}wiki'.format(site))
-     
-     for current_protocol in protocols:
-      with conn.cursor() as cur:
-       url_pattern_start = current_protocol + "://" + url_optimised
+     cur.execute('''SELECT COUNT(*) FROM externallinks
+                    WHERE el_index LIKE '%s'
+                    AND el_index LIKE '%s'
+                    ''' % (url_pattern_start, url_pattern_end))
+     this_num_urls = cur.fetchone()[0]
 
-       cur.execute('''SELECT COUNT(*) FROM externallinks
-                      WHERE el_index LIKE '%s'
-                      AND el_index LIKE '%s'
-                      ''' % (url_pattern_start, url_pattern_end))
-       this_num_urls = cur.fetchone()[0]
-
-      num_urls += this_num_urls
-      print(this_num_urls)
+    num_urls += this_num_urls
+    print(this_num_urls)
 
   else:
    # TODO: Do a mwclient search for text queries - DB doesn't contain full text
