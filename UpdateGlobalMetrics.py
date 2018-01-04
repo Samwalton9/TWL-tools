@@ -41,37 +41,39 @@ for i, search_term in enumerate(url_list):
  if not same_day or (same_day == True and last_data[i+1]) == '': #Ignore any existing data for today
 
   if "." in search_term: #Only do this for URLs
-   search_term = search_term.strip()  # Catch any trailing spaces
-   if search_term[0] == "*":
-    search_term = search_term[2:]
+   search_terms_split = search_term.split(",")
+   for sub_url in search_terms_split:
+    sub_url = sub_url.strip()  # Catch any trailing spaces
+    if sub_url[0] == "*":
+     sub_url = sub_url[2:]
 
-   url_start = search_term.split("/")[0].split(".")[::-1]
-   url_optimised = '.'.join(url_start) + ".%"
+    url_start = sub_url.split("/")[0].split(".")[::-1]
+    url_optimised = '.'.join(url_start) + ".%"
 
-   if "/" in search_term:
-    url_end = "/".join(search_term.split("/")[1:])
-    url_pattern_end = "%./" + url_end + "%"
-   else:
-    url_pattern_end = '%'
-   
-   print("Collecting...")
-   print(url_optimised, url_pattern_end)
-
-   for site in sites:
-    conn = toolforge.connect('{}wiki'.format(site))
+    if "/" in sub_url:
+     url_end = "/".join(sub_url.split("/")[1:])
+     url_pattern_end = "%./" + url_end + "%"
+    else:
+     url_pattern_end = '%'
     
-    for current_protocol in protocols:
-     with conn.cursor() as cur:
-      url_pattern_start = current_protocol + "://" + url_optimised
+    print("Collecting...")
+    print(url_optimised, url_pattern_end)
 
-      cur.execute('''SELECT COUNT(*) FROM externallinks
-                     WHERE el_index LIKE '%s'
-                     AND el_index LIKE '%s'
-                     ''' % (url_pattern_start, url_pattern_end))
-      this_num_urls = cur.fetchone()[0]
+    for site in sites:
+     conn = toolforge.connect('{}wiki'.format(site))
+     
+     for current_protocol in protocols:
+      with conn.cursor() as cur:
+       url_pattern_start = current_protocol + "://" + url_optimised
 
-     num_urls += this_num_urls
-     print(this_num_urls)
+       cur.execute('''SELECT COUNT(*) FROM externallinks
+                      WHERE el_index LIKE '%s'
+                      AND el_index LIKE '%s'
+                      ''' % (url_pattern_start, url_pattern_end))
+       this_num_urls = cur.fetchone()[0]
+
+      num_urls += this_num_urls
+      print(this_num_urls)
 
   else:
    # TODO: Do a mwclient search for text queries - DB doesn't contain full text
