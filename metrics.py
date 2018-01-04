@@ -11,6 +11,7 @@ class CollectMetrics:
 			self.metrics_data = pd.read_csv('metrics.csv')
 		except FileNotFoundError:
 			download_metrics.download_csv()
+			self.metrics_data = pd.read_csv('metrics.csv')
 
 		partner_data = self.metrics_data['Partner']
 		self.partner_names = partner_data[pd.notna(partner_data)].tolist()
