@@ -42,6 +42,12 @@ class CollectMetrics:
 									  if x != '']
 				this_partner_metrics = [int(i.replace(",","")) for i in list(filter(None,this_partner_metrics))]
 
+				if len(domain_split) > 1:
+					domain_split = URL_domain.split(",")
+					domain_string = "{} and {}".format(domain_split[0],domain_split[1])
+				else:
+					domain_string = URL_domain
+
 				max_links = max(this_partner_metrics)
 				min_links = min(this_partner_metrics)
 
@@ -59,7 +65,7 @@ class CollectMetrics:
 
 				selected_urls.append({'URL name': self.URL_names[i],
 									  'Language': self.language_list[i].name,
-									  'Domain': URL_domain,
+									  'Domain': domain_string,
 									  'Link numbers': this_partner_metrics,
 									  'Link dates': dates_iso,
 									  'chart_height': chart_height,
