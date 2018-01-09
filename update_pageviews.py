@@ -156,13 +156,13 @@ def update_pageviews():
                 len(worksheet_title) in [12, 13, 14]):
             sheets_to_edit.append(worksheet_title)
 
+    this_year = datetime.date.today().year
     current_month = datetime.date.today().month
     if current_month == 1:
         last_month = 12
         this_year -= 1
     else:
         last_month = datetime.date.today().month - 1
-    this_year = datetime.date.today().year
     days_this_month = monthrange(this_year, last_month)[1]
 
     all_added_pages, languages_skipped = [], []
