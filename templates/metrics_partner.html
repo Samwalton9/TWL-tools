@@ -16,7 +16,12 @@
 
     <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
     <div class ="url-text">{{ url_metrics['Domain'] }}</div>
-    <br/>
+    {% if url_metrics['notes'] %}
+      <div class="metrics-notes">
+        <b>Notes</b><br/>
+        {{ url_metrics['notes'] }}
+      </div>
+    {% endif %}
     <div class="chart-container">
       <canvas id="{{ loop.index }}">HTML Canvas not supported.</canvas>
     </div>
