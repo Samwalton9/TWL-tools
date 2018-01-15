@@ -147,10 +147,11 @@ def metrics_index():
 @app.route('/metrics/<partner_name>')
 def partner_metrics(partner_name):
     pub_metrics = metrics.CollectMetrics(partner_name)
-    partner_metrics = pub_metrics.list_urls()
-    if partner_metrics:
+    
+    url_metrics, partner_data = pub_metrics.list_urls()
+    if url_metrics:
         return flask.render_template('metrics_partner.html',
-            current_partner= partner_name, metrics_data= partner_metrics)
+            partner_data= partner_data, metrics_data= url_metrics)
 
 
 @app.route('/metrics_info')

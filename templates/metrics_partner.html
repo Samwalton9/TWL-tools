@@ -10,7 +10,10 @@
   <h1>TWL Tools/Metrics</h1>
   <a href="{{ url_for('metrics_index') }}" class="btn btn-info">Back</a>
   <a href="{{ url_for('metrics_info') }}" class="btn btn-info pull-right">Information</a>
-  <h2>{{ current_partner }} link metrics</h2>
+  <h2>{{ partner_data['Partner name'] }} link metrics</h2>
+  {% if partner_data['Library card'] %}
+    <div style="float: right"><a href="{{ partner_data['Library card'] }}">{{ partner_data['Partner name'] }} on the Library Card Platform</a></div>
+  {% endif %}
 
   {% for url_metrics in metrics_data %}
 

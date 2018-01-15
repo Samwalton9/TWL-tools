@@ -3,15 +3,22 @@ import pycountry
 import pandas as pd
 import download_metrics
 
+# TODO: Add more relevant information from partner flow e.g. start date
+# TODO: Make better use of pandas than converting everything to lists
+
+def open_csv(file_name):
+	try:
+		return pd.read_csv(file_name)
+	except FileNotFoundError:
+		download_metrics.download_csv()
+		return pd.read_csv(file_name)
+
 class CollectMetrics:
 
 	def __init__(self, partner_name= None):
 		self.partner_name = partner_name
-		try:
-			self.metrics_data = pd.read_csv('metrics.csv')
-		except FileNotFoundError:
-			download_metrics.download_csv()
-			self.metrics_data = pd.read_csv('metrics.csv')
+		self.metrics_data = open_csv('metrics.csv')
+		self.partner_flow = open_csv('partner_flow.csv')
 
 		partner_data = self.metrics_data['Partner']
 		self.partner_names = partner_data[pd.notna(partner_data)].tolist()
@@ -25,6 +32,14 @@ class CollectMetrics:
 		self.language_list = [pycountry.languages.get(alpha_2=i) for i in languages]
 
 		self.metrics_dates = self.metrics_data.columns.tolist()[7:]
+
+		partner_flow_partners = self.partner_flow['Partner'].tolist()
+		library_card = self.partner_flow['Library card platform'].tolist()
+		if partner_name:
+			self.library_card_link = library_card[partner_flow_partners.index(partner_name)]
+			if pd.isna(self.library_card_link):
+				self.library_card_link = None
+
 
 	def list_partners(self):
 		partner_list = [x for i,x in enumerate(self.partner_names) if self.display_check[i] == 'x']
@@ -71,9 +86,12 @@ class CollectMetrics:
 									  'Link dates': dates_iso,
 									  'chart_height': chart_height,
 									  'chart_start': round(chart_start,-1),
-									  'notes': this_partner_note
+									  'notes': this_partner_note,
 									 })
+		partner_data = {'Partner name': self.partner_name,
+				        'Library card': self.library_card_link
+					   }
 		if len(selected_urls) > 0:
-			return selected_urls
+			return selected_urls, partner_data
 		else:
 			return
