@@ -1,7 +1,7 @@
 body            { font-family: sans-serif; background: #f6f6f6; font-size: 2em;}
 a       		{ color: #0645ad; }
 h1, h2          { font-family: 'Georgia', serif; color: #a5870e}
-h1              { border-bottom: 2px solid #eee; font-size: 3em;}
+h1              { border-bottom: 2px solid #eee; font-size: 2.5em;}
 h2              { font-size: 1.2em; margin-bottom: 1em;}
 canvas {
 	width: 50em;
