@@ -2,7 +2,6 @@ import logins
 import os
 
 __dir__ = os.path.dirname(__file__)
-print(__dir__)
 
 def download_csv():
 	g_client = logins.gspread_login()
