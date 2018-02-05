@@ -288,7 +288,7 @@ def update_pageviews():
                 global_total += int(this_col[ii])
             total += int(this_col[ii])
         fraction = 100*(global_total/float(total))
-        global_sums.update_cell(1, jj+5, this_month['string'])
+        global_sums.update_cell(1, jj+5, g_month)
         global_sums.update_cell(2, jj+5, total)
         global_sums.update_cell(3, jj+5, global_total)
         global_sums.update_cell(4, jj+5, '%.1f%%' % fraction)
