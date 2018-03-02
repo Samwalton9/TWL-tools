@@ -93,6 +93,15 @@
      });
     </script>
     <br/>
+    <div class="linksearch">
+    <b>All links:</b>
+    {% for ls_url in url_metrics['linksearch_urls'] %}
+      <i>{{ ls_url }}</i>: 
+      {% for protocol, url in url_metrics['linksearch_urls'][ls_url].items() %}
+        <a href="{{ url }}">{{ protocol }}</a>
+      {% endfor %}
+    {% endfor %}
+    </div>
 
   {% endfor %}
 </div>

@@ -28,8 +28,8 @@ class CollectMetrics:
 		self.display_check = self.metrics_data['Display?'].tolist()[0:num_partners+1]
 		self.notes = self.metrics_data['Notes'].tolist()
 
-		languages = self.metrics_data['Language'].tolist()
-		self.language_list = [pycountry.languages.get(alpha_2=i) for i in languages]
+		self.languages = self.metrics_data['Language'].tolist()
+		self.language_list = [pycountry.languages.get(alpha_2=i) for i in self.languages]
 
 		self.metrics_dates = self.metrics_data.columns.tolist()[7:]
 
@@ -55,11 +55,8 @@ class CollectMetrics:
 									  if pd.notna(x)]
 				this_partner_metrics = [int(float(str(i).replace(",",""))) for i in this_partner_metrics if pd.notna(i)]
 
-				if "," in URL_domain:
-					domain_split = URL_domain.split(",")
-					domain_string = "{} and {}".format(domain_split[0],domain_split[1])
-				else:
-					domain_string = URL_domain
+				domain_split = URL_domain.split(",")
+				domain_string = " and ".join(domain_split)
 
 				max_links = max(this_partner_metrics)
 				min_links = min(this_partner_metrics)
@@ -79,6 +76,14 @@ class CollectMetrics:
 				if pd.notna(self.notes[i]):
 					this_partner_note = self.notes[i]
 
+				url_structure = "https://{}.wikipedia.org/w/index.php?title=Special:LinkSearch&limit=5000&offset=0&target={}://{}"
+
+				LinkSearch_URLs = {}
+				for this_url_domain in domain_split:
+					LinkSearch_URLs[this_url_domain] = {'HTTP': url_structure.format(self.languages[i], 'http', this_url_domain),
+									   					'HTTPS': url_structure.format(self.languages[i], 'https', this_url_domain)
+									  				   }
+
 				selected_urls.append({'URL name': self.URL_names[i],
 									  'Language': self.language_list[i].name,
 									  'Domain': domain_string,
@@ -87,6 +92,7 @@ class CollectMetrics:
 									  'chart_height': chart_height,
 									  'chart_start': round(chart_start,-1),
 									  'notes': this_partner_note,
+									  'linksearch_urls': LinkSearch_URLs
 									 })
 		partner_data = {'Partner name': self.partner_name,
 				        'Library card': self.library_card_link
