@@ -1,35 +1,41 @@
-body            { font-family: sans-serif; background: #f6f6f6; font-size: 2em;}
+body            { font-family: sans-serif;}
 a       		{ color: #0645ad; }
-h1, h2          { font-family: 'Georgia', serif; color: #a5870e}
-h1              { border-bottom: 2px solid #eee; font-size: 2.5em;}
-h2              { font-size: 1.2em; margin-bottom: 1em;}
+h1, h2          { font-family: 'Georgia', serif; color: #a5870e;}
+h1              { font-size: 2.5em;}
+h2              { font-size: 1.5em; margin-bottom: 1em;}
 canvas {
 	width: 50em;
 	height: 400px;
-	margin-left: 5em;
 }
 html {
 	overflow-y: scroll;
 }
+.navbar {
+	background: #ededed;
+	border-bottom: 1px solid #d8d8d8;
+}
+.nav-link {
+	color: #000000;
+}
+.page-content {
+	margin-left: 15%;
+	margin-right: 15%;
+	margin-top: 2%;
+	margin-bottom: 5%
+}
 
-.container		{ width: 80%; margin: auto; padding: 10px; }
-.sidebar		{ float:left; margin-left: calc(10% - 2px); background: white; width:150px; border: 2px solid #ccc; line-height: 2}
-.page           { border: 2px solid #ccc; padding:30px;
-                  background: white; margin-left: calc(10% + 150px); margin-right: 10%;}
-.logo			{ margin: 10px; margin-bottom: 25px; }
-.sidebartext	{ margin-left:10px; font-size: 0.9em; margin-bottom: 15px;}
 .metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
                   margin-bottom: 1em; }
 .flash          { background: #cee5F5; padding: 0.5em;
-                  border: 1px solid #aacbe2; }
+                  border: 1px solid #aacbe2; margin-top:2%;
+              	  margin-left: 10%; margin-right: 10%;
+              	  border-radius: 5px;}
 .error          { background: #f0d6d6; padding: 0.5em; }
 .submission-button {margin-bottom: 1cm; text-align: center;}
-.footer 		{ font-size: 0.8em; margin-top: 0.5cm}
-.navbar 		{ font-size: 2em; margin-top: 0.3cm; margin-bottom: 1cm; text-align: center}
+.footer 		{ font-size: 0.8em; margin-top: 0.5cm; margin-left: 10%;
+				  margin-right: 10%;}
 .back-button	{ margin-top: 0.3cm; margin-bottom: 1cm}
-.header-text	{ margin-bottom: 0.5cm; font-size: 0.8em;}
 .subtext		{ font-size: 0.8em; margin-bottom: 0.5cm}
-.login-header	{ margin-top: 0.5em; font-size: 0.9em;}
 .url-text {
 	font-style: italic;
 	font-size: 0.9em;
@@ -38,8 +44,9 @@ html {
 	margin-top: 20px;
 	margin-bottom: 20px;
 	position: relative;
-	height:20%;
 	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
 }
 .metrics-partners {
 	margin-top:2em;
@@ -58,4 +65,5 @@ html {
 .linksearch {
 	font-size:0.7em;
 	text-align: center;
+	margin-top: 10px;
 }

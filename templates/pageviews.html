@@ -1,4 +1,5 @@
-<!doctype html>
+{% extends 'base.html' %}
+
 {% macro render_field(field) %}
   <dt>{{ field.label }}
   <dd>{{ field(**kwargs)|safe }}
@@ -11,75 +12,64 @@
   {% endif %}
   </dd>
 {% endmacro %}
-<title>TWL Tools - Pageviews</title>
-<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>TWL Tools/Pageviews</h1>
-  <div class="back-button">
-    <a href="{{ url_for('index') }}" class="btn btn-info">Back</a>
-  </div>
 
-  <div class="header-text">
-    The pageviews data script runs automatically, at 00:00 UTC on the 3rd of each month (to ensure all the pageviews data for the previous month is present).
-    <br>
-  </div>
+{% block content %}
 
-  {% if type == 'files' %}
-    <h2>Add new language</h2>
-    {% for message in get_flashed_messages() %}
-      <div class=flash>{{ message }}</div>
-    {% endfor %}
-    <form method=post>
-      <dl>
-        {{ render_field(form.form_language) }}
-        {{ render_field(form.form_category) }}
-      </dl>
-      <p><input type=submit value=Submit>
-    </form>
-    
-    <h2>Collection logs</h2>
-    <div class="subtext">
-      Below you will find a list of log files. The format is MONTH_YEAR, with the third number denoting extra runs in the same month.
-    </div>
+<h1>Pageviews</h1>
+<div class="back-button">
+  <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
+</div>
 
-    {% if results %}
-      {% for result in results %}
-        <li><a href="{{ url_for('individual_log', log_file=result) }}">{{ result.capitalize() }}</a></li>
-      {% endfor %}
-    {% else %}
-      Pageviews have either not yet been calculated, or the log files were deleted.
-      <br>
-      <br>
-      If you don't think this is true, please report this bug.
-    {% endif %}
-  {% endif %}
+<div class="header-text">
+  The pageviews data script runs automatically, at 00:00 UTC on the 3rd of each month (to ensure all the pageviews data for the previous month is present).
+  <br>
+</div>
 
-  {% if type == 'log' %}
-    <div class="subtext">
-      The log shows new pages that have been added to categories since the last run, any API errors that were returned, and any languages which were skipped because they were already collected (which should rarely be the case).<br><br>
-    </div>
-    <div class="back-button">
-      <a href="{{ url_for('pageviews') }}">Back to list</a>
-    </div>
-    {% if results %}
-      {% for result in results %}
-       {{ result }}
-       <br>
-      {% endfor %}
-    {% else %}
-      This log file doesn't appear to exist.
-    {% endif %}
-  {% endif %}
-
-  {#<div class=metanav>
-  {% if not session.logged_in %}
-    <a href="{{ url_for('login') }}">log in</a>
-  {% else %}
-    <a href="{{ url_for('logout') }}">log out</a>
-  {% endif %}
-  </div>
+{% if type == 'files' %}
+  <h2>Add new language</h2>
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
-  {% endfor %}#}
-</div>
+  {% endfor %}
+  <form method=post>
+    <dl>
+      {{ render_field(form.form_language) }}
+      {{ render_field(form.form_category) }}
+    </dl>
+    <p><input type=submit value=Submit>
+  </form>
+  
+  <h2>Collection logs</h2>
+  <div class="subtext">
+    Below you will find a list of log files. The format is MONTH_YEAR, with the third number denoting extra runs in the same month.
+  </div>
+
+  {% if results %}
+    {% for result in results %}
+      <li><a href="{{ url_for('individual_log', log_file=result) }}">{{ result.capitalize() }}</a></li>
+    {% endfor %}
+  {% else %}
+    Pageviews have either not yet been calculated, or the log files were deleted.
+    <br>
+    <br>
+    If you don't think this is true, please report this bug.
+  {% endif %}
+{% endif %}
+
+{% if type == 'log' %}
+  <div class="subtext">
+    The log shows new pages that have been added to categories since the last run, any API errors that were returned, and any languages which were skipped because they were already collected (which should rarely be the case).<br><br>
+  </div>
+  <div class="back-button">
+    <a href="{{ url_for('pageviews') }}">Back to list</a>
+  </div>
+  {% if results %}
+    {% for result in results %}
+     {{ result }}
+     <br>
+    {% endfor %}
+  {% else %}
+    This log file doesn't appear to exist.
+  {% endif %}
+{% endif %}
+
+{% endblock %}

@@ -1,98 +1,32 @@
-<!doctype html>
+{% extends 'base.html' %}
+
+{% block content %}
 <head>
   <script src="{{ url_for('static', filename='js/moment.js')}}"></script>
   <script src="{{ url_for('static', filename='js/Chart.js')}}"></script>
 </head>
+
 <title>TWL Tools - Metrics</title>
-<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
-<link rel=stylesheet href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>TWL Partner Metrics</h1>
-  <a href="{{ url_for('metrics_index') }}" class="btn btn-info">Back</a>
-  <a href="{{ url_for('metrics_info') }}" class="btn btn-info pull-right">Information</a>
-  <h2>{{ partner_data['Partner name'] }} link metrics</h2>
-  {% if partner_data['Library card'] %}
-    <div style="float: right"><a href="{{ partner_data['Library card'] }}">{{ partner_data['Partner name'] }} on the Library Card Platform</a></div>
-  {% endif %}
+<h1>TWL Partner Metrics</h1>
+<a href="{{ url_for('metrics_index') }}" class="btn btn-primary">Back</a>
+<a href="{{ url_for('metrics_info') }}" class="btn btn-primary pull-right">Information</a>
+<h2>{{ partner_data['Partner name'] }} link metrics</h2>
+{% if partner_data['Library card'] %}
+  <div style="float: right"><a href="{{ partner_data['Library card'] }}">{{ partner_data['Partner name'] }} on the Library Card Platform</a></div>
+{% endif %}
 
-  {% for url_metrics in metrics_data %}
+{% for url_metrics in metrics_data %}
 
-    <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
-    <div class ="url-text">{{ url_metrics['Domain'] }}</div>
-    {% if url_metrics['notes'] %}
-      <div class="metrics-notes">
-        <b>Notes</b><br/>
-        {{ url_metrics['notes'] }}
-      </div>
-    {% endif %}
-    <div class="chart-container">
-      <canvas id="{{ loop.index }}">HTML Canvas not supported.</canvas>
+  <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
+  <div class ="url-text">{{ url_metrics['Domain'] }}</div>
+  {% if url_metrics['notes'] %}
+    <div class="metrics-notes">
+      <b>Notes</b><br/>
+      {{ url_metrics['notes'] }}
     </div>
-    <script>
-      var chartData = {
-      labels: [{% for item in url_metrics['Link dates'] %}
-                  new Date("{{item}}"),
-               {% endfor %}],
-      datasets: [
-        {
-          data: [{% for item in url_metrics['Link numbers'] %}
-                    {{item}},
-                 {% endfor %}],
-          backgroundColor: 'rgba(118, 186, 242, 0.3)',
-          lineTension: 0
-        }]
-      }
-
-      Chart.defaults.global.legend.display = false;
-      Chart.defaults.global.animationSteps = 60;
-      Chart.defaults.global.tooltipYPadding = 16;
-      Chart.defaults.global.tooltipCornerRadius = 0;
-      Chart.defaults.global.tooltipTitleFontStyle = "normal";
-      Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
-      Chart.defaults.global.animationEasing = "linear";
-      Chart.defaults.global.responsive = true;
-      Chart.defaults.global.scaleLineColor = "black";
-      Chart.defaults.global.scaleFontSize = 16;
-
-     // get chart canvas
-     var mychart = document.getElementById("{{ loop.index }}").getContext("2d");
-   
-     steps = 10
-     data_max = {{ url_metrics['chart_height'] }}
-     data_min = {{ url_metrics['chart_start'] }}
-
-     var chartOptions = {
-      scales: {
-        xAxes: [{
-          type: 'time',
-          distribution: 'linear',
-          time: {
-            unit: 'month',
-            tooltipFormat: "MMM DD YYYY",
-            displayFormats: {
-              month: 'MMM YYYY'
-            }
-          }
-        }],
-        yAxes: [{
-          ticks: {
-            max: data_max,
-            min: data_min
-          }
-        }]
-      }
-     }
-
-     // draw chart
-     var LineChart = new Chart(mychart, {
-          type: 'line',
-          data: chartData,
-          bezierCurve: false,
-          options: chartOptions
-   
-     });
-    </script>
-    <br/>
+  {% endif %}
+  <div class="chart-container">
+    <canvas id="{{ loop.index }}">HTML Canvas not supported.</canvas>
     <div class="linksearch">
     <b>All links:</b>
     {% for ls_url in url_metrics['linksearch_urls'] %}
@@ -102,6 +36,72 @@
       {% endfor %}
     {% endfor %}
     </div>
+  </div>
+  <script>
+    var chartData = {
+    labels: [{% for item in url_metrics['Link dates'] %}
+                new Date("{{item}}"),
+             {% endfor %}],
+    datasets: [
+      {
+        data: [{% for item in url_metrics['Link numbers'] %}
+                  {{item}},
+               {% endfor %}],
+        backgroundColor: 'rgba(118, 186, 242, 0.3)',
+        lineTension: 0
+      }]
+    }
 
-  {% endfor %}
-</div>
+    Chart.defaults.global.legend.display = false;
+    Chart.defaults.global.animationSteps = 60;
+    Chart.defaults.global.tooltipYPadding = 16;
+    Chart.defaults.global.tooltipCornerRadius = 0;
+    Chart.defaults.global.tooltipTitleFontStyle = "normal";
+    Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+    Chart.defaults.global.animationEasing = "linear";
+    Chart.defaults.global.responsive = true;
+    Chart.defaults.global.scaleLineColor = "black";
+    Chart.defaults.global.scaleFontSize = 16;
+
+   // get chart canvas
+   var mychart = document.getElementById("{{ loop.index }}").getContext("2d");
+ 
+   steps = 10
+   data_max = {{ url_metrics['chart_height'] }}
+   data_min = {{ url_metrics['chart_start'] }}
+
+   var chartOptions = {
+    scales: {
+      xAxes: [{
+        type: 'time',
+        distribution: 'linear',
+        time: {
+          unit: 'month',
+          tooltipFormat: "MMM DD YYYY",
+          displayFormats: {
+            month: 'MMM YYYY'
+          }
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          max: data_max,
+          min: data_min
+        }
+      }]
+    }
+   }
+
+   // draw chart
+   var LineChart = new Chart(mychart, {
+        type: 'line',
+        data: chartData,
+        bezierCurve: false,
+        options: chartOptions
+ 
+   });
+  </script>
+  <br/>
+
+{% endfor %}
+{% endblock %}

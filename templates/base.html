@@ -1,0 +1,60 @@
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <!-- Nav bar-->
+  <nav class="navbar navbar-expand-md">
+    <div class="container">
+      <h1 class="mr-3"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='TWL_logo.png') }}" alt="The Wikipedia Library logo" width="75px"></a></h1>
+      <button class="navbar-toggler my-2" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse flex-column align-items-start justify-content-between" id="navbarCollapse">
+        <ul class="navbar-nav">
+          <h1>TWL Tools</h1>
+        </ul>
+        <ul class="navbar-nav flex-row">
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('periodicals') }}">Periodicals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('pageviews') }}">Pageviews</a></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('scheduled_tasks') }}">Scheduled tasks</a></a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('metrics_index') }}">Metrics</a>
+          </li>
+        </ul>
+      </div>
+      {% if not current_user.is_authenticated %}
+        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+      {% else %}
+        <a class="nav-item nav-link" href="{{ url_for('logout') }}">Log out</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+
+  <div class="page-content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <hr>
+  <p class="footer">
+    Maintained by <a href="https://en.wikipedia.org/wiki/User:Samwalton9">Sam Walton</a> - 
+    <a href="https://github.com/Samwalton9/TWL-tools">Github</a>
+  </p>
+
+</body>
+</html>

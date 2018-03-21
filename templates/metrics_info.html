@@ -1,36 +1,33 @@
-<!doctype html>
-<title>TWL Tools - Metrics information</title>
-<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>TWL Tools - Metrics information</h1>
-  <div class="back-button">
-    <a href="javascript:history.back()">Back</a>
-  </div>
+{% extends 'base.html' %}
 
-  <h2>Overview</h2>
-  <p>
-  	The metrics data shown here is the total number of links to a URL pattern from the language Wikipedia denoted above each graph. The data is not limited to any subset of users.
-  </p>
-  <p>
-  	This data allows The Wikipedia Library (TWL) team and its publisher partners to assess the degree to which TWL resources are used on Wikipedia and therefore how successful a partnership is.
-  </p>
-
-  <h2>Future</h2>
-  <p>
-  	The existing link metrics data is limited in its usefulness. It must be actively collected on a regular basis, only has historical data as far back as we began tracking, doesn't distinguish between links added by editors with access through The Wikipedia Library or via other means, and can't provide any information about removed links.
-  </p>
-  <p>
-  	We are working on improvements to Mediawiki's link tracking which will add a new data source tracking every new link addition or removal, the date it was added/removed, and the username of the editor who added/removed the link. This data will be displayed alongside the overall tracking graphs in the near future.
-  </p>
-
-
-  <h2>Technical details</h2>
-  <p>
-  	Link metrics are collected from the <a href="https://www.mediawiki.org/wiki/Manual:Externallinks_table">Externallinks table</a> of <a href="https://wikitech.wikimedia.org/wiki/Help:Toolforge">Toolforge</a>'s <a href="https://wikitech.wikimedia.org/wiki/Help:Toolforge/Database">production database replicas</a>. Until December 2017 this data was collected manually and sporadically. It is now collected automatically on a weekly basis through Toolforge.
-  </p>
-  <p>
-  	The source code for collecting this data is viewable on <a href="https://github.com/Samwalton9/TWL-tools/blob/master/UpdateMetrics.py">GitHub</a>.
-  </p>
-
+{% block content %}
+<h1>Metrics information</h1>
+<div class="back-button">
+  <a class="btn btn-primary" href="javascript:history.back()">Back</a>
 </div>
+
+<h2>Overview</h2>
+<p>
+	The metrics data shown here is the total number of links to a URL pattern from the language Wikipedia denoted above each graph. The data is not limited to any subset of users.
+</p>
+<p>
+	This data allows The Wikipedia Library (TWL) team and its publisher partners to assess the degree to which TWL resources are used on Wikipedia and therefore how successful a partnership is.
+</p>
+
+<h2>Future</h2>
+<p>
+	The existing link metrics data is limited in its usefulness. It must be actively collected on a regular basis, only has historical data as far back as we began tracking, doesn't distinguish between links added by editors with access through The Wikipedia Library or via other means, and can't provide any information about removed links.
+</p>
+<p>
+	We are working on improvements to Mediawiki's link tracking which will add a new data source tracking every new link addition or removal, the date it was added/removed, and the username of the editor who added/removed the link. This data will be displayed alongside the overall tracking graphs in the near future.
+</p>
+
+
+<h2>Technical details</h2>
+<p>
+	Link metrics are collected from the <a href="https://www.mediawiki.org/wiki/Manual:Externallinks_table">Externallinks table</a> of <a href="https://wikitech.wikimedia.org/wiki/Help:Toolforge">Toolforge</a>'s <a href="https://wikitech.wikimedia.org/wiki/Help:Toolforge/Database">production database replicas</a>. Until December 2017 this data was collected manually and sporadically. It is now collected automatically on a weekly basis through Toolforge.
+</p>
+<p>
+	The source code for collecting this data is viewable on <a href="https://github.com/Samwalton9/TWL-tools/blob/master/UpdateMetrics.py">GitHub</a>.
+</p>
+{% endblock %}

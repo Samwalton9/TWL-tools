@@ -1,20 +1,18 @@
-<!doctype html>
-<title>TWL Tools - Login</title>
-<link rel=stylesheet href="{{ url_for('static', filename='bootstrap.min.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h2>Login</h2>
-  <div class=login-header>
-    Some functions of this website are only for use by Wikipedia Library staff.
-  </div>
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('login') }}" method=post>
-    <dl>
-      <dt>Username:
-      <dd><input type=text name=username>
-      <dt>Password:
-      <dd><input type=password name=password>
-      <dd><input type=submit value=Login>
-    </dl>
-  </form>
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Login</h2>
+<div class=login-header>
+  Some functions of this website are only for use by Wikipedia Library staff.
 </div>
+{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+<form action="{{ url_for('login') }}" method=post>
+  <dl>
+    <dt>Username:
+    <dd><input type=text name=username>
+    <dt>Password:
+    <dd><input type=password name=password>
+    <dd><input type=submit class="btn btn-primary" value=Login>
+  </dl>
+</form>
+{% endblock %}
