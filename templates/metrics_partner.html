@@ -17,6 +17,10 @@
 
 {% for url_metrics in metrics_data %}
 
+  {% if loop.index != 1 %}
+  <hr>
+  {% endif %}
+
   <b>{{ url_metrics['URL name'] }}</b> - {{ url_metrics['Language'] }} Wikipedia<br/>
   <div class ="url-text">{{ url_metrics['Domain'] }}</div>
   {% if url_metrics['notes'] %}
