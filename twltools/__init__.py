@@ -23,7 +23,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import twltools
+    from . import app as twltools
     app.register_blueprint(twltools.bp)
 
     return app

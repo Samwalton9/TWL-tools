@@ -9,5 +9,5 @@ numpy==1.13.3
 oauth2client==4.1.2
 mwclient==0.8.6
 mwviews==0.0.9
-pandas==0.23.1
+pandas==0.22.0
 toolforge==4.1.0
