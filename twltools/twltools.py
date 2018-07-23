@@ -26,12 +26,16 @@
 import flask
 import flask_login
 import wtforms
+
 import os
 from fnmatch import fnmatch
+
 import proxy
 import update_pageviews
 import metrics
 import download_metrics
+
+bp = flask.Blueprint('twltools', __name__, url_prefix='/')
 
 app = flask.Flask(__name__)
 app.config.from_object(__name__)

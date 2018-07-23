@@ -1,12 +1,13 @@
 # Flask
-flask
-flask-login
-wtforms
+flask==1.0.2
+flask-login==0.4.0
+wtforms==2.1
 # Other
-pycountry
-gspread
-numpy
-oauth2client
-mwclient
-mwviews
-pandas
+pycountry==17.9.23
+gspread==0.6.2
+numpy==1.13.3
+oauth2client==4.1.2
+mwclient==0.8.6
+mwviews==0.0.9
+pandas==0.23.1
+toolforge==4.1.0
