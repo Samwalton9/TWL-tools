@@ -42,7 +42,7 @@ class CollectMetrics:
 
 
 	def list_partners(self):
-		partner_list = [x for i,x in enumerate(self.partner_names) if self.display_check[i] == 'x']
+		partner_list = [x.decode('utf-8') for i,x in enumerate(self.partner_names) if self.display_check[i] == 'x']
 		return sorted(set(partner_list))
 
 	def list_urls(self):
