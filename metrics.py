@@ -50,10 +50,10 @@ class CollectMetrics:
 		for i, URL_domain in enumerate(self.URL_domains):
 			if self.partner_names[i] == self.partner_name and self.display_check[i] == 'x':
 				this_partner_metrics = self.metrics_data.iloc[i,7:].tolist()
-				this_partner_dates = [self.metrics_dates[i]
-									  for i, x in enumerate(this_partner_metrics)
+				this_partner_dates = [self.metrics_dates[j]
+									  for j, x in enumerate(this_partner_metrics)
 									  if pd.notna(x)]
-				this_partner_metrics = [int(float(str(i).replace(",",""))) for i in this_partner_metrics if pd.notna(i)]
+				this_partner_metrics = [int(float(str(k).replace(",",""))) for k in this_partner_metrics if pd.notna(k)]
 
 				domain_split = URL_domain.split(",")
 				domain_string = " and ".join(domain_split)
