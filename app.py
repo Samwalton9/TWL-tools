@@ -99,7 +99,7 @@ def periodicals():
             proxy.collect_proxy_data()
     try:
         results = open('periodicals_data', 'r').readlines()
-    except FileNotFoundError:
+    except IOError:
         results = None
 
     return flask.render_template('periodicals.html', results=results)
@@ -168,7 +168,7 @@ def open_log(file_name):
         with open('logs/{}.txt'.format(file_name)) as f:
             log_text = f.readline()
         return log_text
-    except FileNotFoundError:
+    except IOError:
         return
 
 
