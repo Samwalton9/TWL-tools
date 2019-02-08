@@ -36,7 +36,7 @@ The virtual environment and webservice components of the tool were setup followi
 
 To interact with the webservice use the following commands:
 
-* Start: `webservice --backend=kubernetes python start`
+* Start: `webservice --backend=kubernetes python2 start`
 * Stop: `webservice stop`
 * Restart: `webservice restart`
 
